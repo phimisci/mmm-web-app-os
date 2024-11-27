@@ -38,16 +38,12 @@ First, you need to have docker installed. Aftwards, download this repository and
 - `DOC2MD_IMAGE`: The image name for the DOC2MD-OS module. Example: `ghcr.io/phimisci/doc2md-os:latest`
 - `TYPESETTING_IMAGE`: The image name for the Typesetting Container OS module. Example: `ghcr.io/phimisci/typesetting-container-os:latest`	
 
-Important note: Since some values such as `FLASK_ADMIN_USERNAME` and `FLASK_ADMIN_PASSWORD` are sensitive, you can use environment variables to set these values. If you do not want to use environment variables, you can set the values directly in the `mmm.cfg` file. In eithe case, the environment variables always have precedence over the values in the `mmm.cfg` file. The MMM currently checks the following environment variables:
+Important note: Since some values such as `FLASK_ADMIN_USERNAME` and `FLASK_ADMIN_PASSWORD` are sensitive, you can use environment variables to set these values. If you do not want to use environment variables, you can set the values directly in the `mmm.cfg` file. In eithe case, the environment variables always have precedence over the values in the `mmm.cfg` file.
 
-- `FLASK_ADMIN_USERNAME`
-- `FLASK_ADMIN_PASSWORD`
-- `SECRET_KEY`
+## logging
+To enable logging, you need to mount two logfiles to the container (one for flask, the other for gunicorn). You can do this by adding `./flask-logging.log:/app/flask-logging.log` and `./gunicorn-logging.log:/app/gunicorn-logging.log` to the `docker run` command or `docker-compose.yml` file.
 
-### logging
-To enable logging, you need to mount two logfiles to the container (one for flask, the other for gunicorn). You can do this by adding `./flask-logging.log:/ap/flask-logging.log` and `./gunicorn-logging.log:/ap/gunicorn-logging.log` to the `docker run` command or `docker-compose.yml` file.
-
-### Activate DB migrations
+## Activate DB migrations
 To activate the DB migrations, you need to run the following commands:
 ```bash
 docker compose run mmm-app flask db init
@@ -99,28 +95,8 @@ The permissions are as follows:
 
 Note that only the project owner can delete an entire project.
 
-## Updates
+## About
 
-### 0.3.4 (28.06.2024)
 
-- Added a user settings menu where the user can change their password and email address
-- Added an option to reset password
-- Users are now informed via e-mail if project is shared with them
-- Adding flask-migrate support for DB migrations
+## Versions
 
-### 0.3.3 (31.05.2024)
-
-- Only one flash message appears when deleting multiple files (2024/05/31)
-- Maker-Selection/Maker step now highlights correct files in overview (2024/05/31)
-- Fixed bug where invited user could not upload file with existing file with the same name in folder (2024/05/31)
-- Permissions can now be updated; existing permissions are shown in the sharing options and checkboxes are checked for already granted permissions (2024/05/31)
-
-### 0.3.2
-
-- User/Production/All files can now be downloaded as a zip file (2024/05/16)
-- Multiple files can be deleted (2024/05/16)
-- An individual file name can now be passed to Maker/DW step (2024/05/16)
-- Projects can now be shared with other users (2024/05/10)
-- VerifyBibTeX now generates a HTML output, depending on the amount of issues found in the BibTeX-file (2024/05/10)
-- If file is uploaded and the filename already exists, the *old* file is renamed to \<filename>_\<created_at>_\<random_string>.\<extension> (2024/05/02) 
-- Files and projects can now be renamed (2024/05/02)

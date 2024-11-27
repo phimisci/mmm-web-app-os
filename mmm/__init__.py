@@ -14,7 +14,16 @@ csrf = CSRFProtect()
 mail = Mail()
 migrate = Migrate()
 
-def create_app():
+def create_app() -> Flask:
+    '''Main function to create the Flask app. This function initializes the app, sets the configuration, and registers the blueprints, extensions, and login manager. It also sets up logging. This function is used in the main ws
+
+    Returns
+    -------
+        Flask
+            The Flask app.
+    
+    '''
+
     app = Flask(__name__, instance_relative_config=True)
 
     # Set config
@@ -43,8 +52,8 @@ def create_app():
         app.config['MAIL_PASSWORD'] = os.environ['MAIL_PASSWORD']
     if 'LOG_FILE' in os.environ:
         app.config['LOG_FILE'] = os.environ['LOG_FILE']
-    if 'VERIFY_BIBTEX_IMAGE' in os.environ:
-        app.config['VERIFY_BIBTEX_IMAGE'] = os.environ['VERIFY_BIBTEX_IMAGE']
+    if 'VERIFYBIBTEX_IMAGE' in os.environ:
+        app.config['VERIFYBIBTEX_IMAGE'] = os.environ['VERIFYBIBTEX_IMAGE']
     if 'DOC2MD_IMAGE' in os.environ:
         app.config['DOC2MD_IMAGE'] = os.environ['DOC2MD_IMAGE']
     if 'XML2YAML_IMAGE' in os.environ:

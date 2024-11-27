@@ -4,6 +4,7 @@ from typing import List, Optional
 from flask import current_app
 from flask_login import current_user
 import shutil
+from flask import current_app
 
 def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) -> bool:
     '''Function to call Docker container to create MD files from uploaded document file.
@@ -29,9 +30,9 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
 
     # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
     if not zotero_used:
-        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", "registry.git.noc.ruhr-uni-bochum.de/phimisci/doc2md/0.0.1:latest", doc_file_name]
+        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", current_app.config.get('DOC2MD_IMAGE'), doc_file_name]
     else:
-        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", "registry.git.noc.ruhr-uni-bochum.de/phimisci/doc2md/0.0.1:latest", "--zotero", doc_file_name]
+        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", current_app.config.get('DOC2MD_IMAGE'), "--zotero", doc_file_name]
 
     result = subprocess.run(docker_command)
     
@@ -98,7 +99,7 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
     HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
     # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
-    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/article", "registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.1.0:latest", yml_file_name, md_file_name]
+    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/article", current_app.config.get('TYPESETTING_IMAGE'), yml_file_name, md_file_name]
 
     ## adding additional optional arguments
     ### biblatex
@@ -183,7 +184,7 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, artnum: str, volume
     HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
     # docker run --rm docker run --rm -v $(pwd):/app
-    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/xml", "registry.git.noc.ruhr-uni-bochum.de/phimisci/xml2yaml/0.0.3", xml_file_name]
+    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/xml", current_app.config.get('XML2YAML_IMAGE'), xml_file_name]
 
     ## adding additional optional arguments
     ### year
@@ -239,7 +240,7 @@ def create_verifybibtex_report(dir_path: str, bibtex_file: str = "bib.bib") -> b
     HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
     # docker run --rm docker run --rm -v $(pwd):/app/report
-    docker_command = ["docker", "run","--rm", "-e", f"BIBTEX_FILE={bibtex_file}", "--volume", f"{HOST_UPLOAD_DIR}:/app/report", "registry.git.noc.ruhr-uni-bochum.de/phimisci/verifybibtex/0.2.0"]
+    docker_command = ["docker", "run","--rm", "-e", f"BIBTEX_FILE={bibtex_file}", "--volume", f"{HOST_UPLOAD_DIR}:/app/report", current_app.config.get('VERIFYBIBTEX_IMAGE')]
 
     # running docker container
     result = subprocess.run(docker_command)

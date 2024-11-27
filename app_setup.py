@@ -11,9 +11,9 @@ def create_admin() -> None:
     with the provided admin username, password, and email address. The admin user is then added to the database
     and committed.
 
-        Returns
-        -------
-            None
+    Returns
+    -------
+        None
     """
     print("Creating admin user...")
     # Check if admin user already exists
@@ -32,10 +32,10 @@ def search_admin_env() -> tuple:
     Searches for the environment variables FLASK_ADMIN_USERNAME and FLASK_ADMIN_PASSWORD in the app.config.
     If found, returns their values. Otherwise, returns the default values ("admin", "admin").
 
-        Returns
-        -------
-            tuple
-                A tuple containing the admin username and password.
+    Returns
+    -------
+        tuple
+            A tuple containing the admin username and password.
     """
     if current_app.config.get('FLASK_ADMIN_USERNAME') and current_app.config.get('FLASK_ADMIN_PASSWORD'):
         return current_app.config.get('FLASK_ADMIN_USERNAME'), current_app.config.get('FLASK_ADMIN_PASSWORD')
