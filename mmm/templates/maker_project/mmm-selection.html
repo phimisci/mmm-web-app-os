@@ -1,0 +1,153 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<!-- Loading Animation; only switched on when pressing submit -->
+<div id="loading-container-phimisci" style="display: none;">
+    <div id="loading-animation-phimisci" style="display: none;"></div>
+</div>
+
+<h2>Maker selection</h2>
+
+<form method="post" action="{{ url_for('maker_project.mmm_selection', project_id=project_id )}}" id="phimisci-form-field">
+    {{ form.hidden_tag() }}
+    <p>Select <b>files</b> that should be used during the Maker processing. Potentially relevant files for each step are highlighted in green.</p>
+    {% for choice_form in form.file_choices %}
+        <div class="phimisci-mmm-file-selection">
+            {{ choice_form.selected() }} {{ choice_form.selected.label.text }}
+            {{ choice_form.file_name(type='hidden') }}
+        </div>
+    {% endfor %}
+
+    <!-- Hidden forms for MAKER step -->
+    <p style="margin-top: 3%;">Select <b>Maker</b> step here:</p>
+    {% for subfield in form.mmm_choices %}
+        <div>
+            {{ subfield }} <label for="{{ subfield.id }}">{{ subfield.label.text|safe }}</label>
+        </div>
+    {% endfor %}
+
+    <!-- Hidden forms for DOC2MD step -->
+    <div id="hiddenDOC2MDField" style="display: None;">
+        <p style="margin-top: 3%;">Add additional information for <b>DOC2MD</b>:</p>
+        <div class="mb-3">
+            {{ form.zotero_used(class_='form-check-input') }}
+            {{ form.zotero_used.label(class_='form-check-label') }}
+        </div>
+    </div>
+
+    <div id="hiddenMakerField" style="display: None;">
+        <p style="margin-top: 3%;">Add optional file name for <b>Maker</b> output files:</p>
+        <div class="mb-3">
+            {{ form.custom_file_name.label(class_='form-label') }}
+            {{ form.custom_file_name(class_='form-control') }}
+        </div>
+    </div>
+
+    <!-- Hidden forms for XML2YAML step -->
+    <div id="hiddenXML2YAMLField" style="display: None;">
+        <p style="margin-top: 3%;">Add additional information for <b>XML2YAML</b>:</p>
+        <div class="mb-3">
+            {{ form.artnum.label(class_='form-label') }}
+            {{ form.artnum(class_='form-control') }}
+            <div id="artnumHelp" class="form-text">Optional. Deprecated since 2024.</div>
+        </div>
+        <div class="mb-3">
+            {{ form.volume_number.label(class_='form-label') }}
+            {{ form.volume_number(class_='form-control') }}
+        </div>
+        <div class="mb-3">
+            {{ form.orcids.label(class_='form-label') }}
+            {{ form.orcids(class_='form-control') }}
+            <div id="orcidHelp" class="form-text">Optional. Usually, the ORCIDs should be included in the OJS XML. If you need to manually add them, use the follwing syntax (separate entries using semicolons): <i>Jurczyk=0000-0002-5943-2305; Wiese=0000-0003-3338-7398).</i>.</div>
+        </div>
+        <div class="mb-3">
+            {{ form.year.label(class_='form-label') }}
+            {{ form.year(class_='form-control') }}
+        </div>
+        <div class="mb-3">
+            {{ form.si_teaser.label(class_='form-label') }}
+            {{ form.si_teaser(class_='form-control') }}
+            <div id="siHelp" class="form-text">Optional. Only necessary if this article is part of a special issue.</div>
+        </div>
+    </div>
+
+    {{ form.submit(id='submit-phimisci', onclick='startLoadingAnimation()', style='margin-top: 3%;') }}
+</form>
+
+<p style="margin-top: 3%;">
+    <a href="{{ url_for('maker_project.show_project_files', project_id=project_id)}}" class="phimisci-link-plain"><img src="{{ url_for('static', filename='icons/return.png')}}" class="phimisci-intext-icon" alt=""> Project files</a>
+</p>
+
+<!-- Show the XML2YAML StringFields if XML2YAML step is selected -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var radios = document.querySelectorAll('input[type="radio"]');
+        var hiddenDiv = document.getElementById('hiddenXML2YAMLField');
+
+        radios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (radio.checked && radio.value === 'xml2yaml') {
+                    hiddenDiv.style.display = 'block';
+                } else {
+                    hiddenDiv.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var radios = document.querySelectorAll('input[type="radio"]');
+        var hiddenDiv = document.getElementById('hiddenMakerField');
+
+        radios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (radio.checked && radio.value === 'dw') {
+                    hiddenDiv.style.display = 'block';
+                } else {
+                    hiddenDiv.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var radios = document.querySelectorAll('input[type="radio"]');
+        var hiddenDiv = document.getElementById('hiddenDOC2MDField');
+
+        radios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (radio.checked && radio.value === 'doc2md') {
+                    hiddenDiv.style.display = 'block';
+                } else {
+                    hiddenDiv.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    // Highlight files that are relevant for various MMM steps
+    document.addEventListener('DOMContentLoaded', function () {
+        var radios = document.querySelectorAll('input[type="radio"]');
+       
+        radios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (radio.checked && radio.value === 'doc2md') {
+                    highlightFiles(['docx', 'doc', 'odt']);
+                } else if (radio.checked && radio.value === 'xml2yaml') {
+                    highlightFiles(['xml']);
+                } else if (radio.checked && radio.value === 'verifybibtex') {
+                    highlightFiles(['bib', 'bibtex']);
+                } else if (radio.checked && radio.value === 'dw') {
+                    highlightFiles(['markdown', 'md', 'bib', 'bibtex', 'yml', 'yaml']);
+                } else if (radio.checked && radio.value === 'tex2pdf') {
+                    highlightFiles(['tex', 'latex', 'bib', 'bibtex', 'png', 'jpg', 'jpeg']);
+                }
+            });
+        });
+    });
+
+
+</script>
+
+{% endblock %}
+

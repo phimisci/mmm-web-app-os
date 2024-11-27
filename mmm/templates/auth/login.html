@@ -1,0 +1,18 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <form method="POST" action="{{ url_for('auth.login') }}" role="form">
+        <div class="mb-3">
+            {{ form.csrf_token }}
+            <label for="loginFieldUsername" class="form-label">Username</label>
+            {{ form.username(class='form-control', id='loginFieldUsername', type='text') }}
+        </div>
+        <div class="mb-3">
+            <label for="loginFieldPassword" class="form-label">Password</label>
+            {{ form.password(class='form-control', id='loginFieldPassword', type='password') }}
+        </div>
+        <div><a href="{{ url_for('auth.reset_password_request') }}">Forgot password?</a></div>
+        <button type="submit" id="submit-phimisci" style="margin-top: 3%">Login</button>
+    </form>
+{% endblock %}

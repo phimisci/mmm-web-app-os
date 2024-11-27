@@ -1,0 +1,46 @@
+<nav class="navbar navbar-expand-md navbar-custom-phimisci">
+    <div class="container-fluid centered-container-phimisci">
+      <a class="navbar-brand" href="{{ url_for('main.index') }}">
+        <img style="width: 253px; height: 156px" src="{{ url_for('static', filename='images/phimisci_logo_main.png')}}" />
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse col-md-6 justify-content-end" id="navbarNav">
+        <ul class="navbar-nav navbar-font-phimisci">
+          <li class="nav-item">
+            <a class={% if request.path == '/' %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('main.index') }}">Home</a>
+          </li>
+          {% if current_user.is_authenticated %}  
+                <li class="nav-item">
+                    <a class={% if request.path.startswith('/maker/') %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('maker.index') }}">Maker</a>
+                </li>  
+        {% endif %}
+		{% if current_user.is_authenticated %}  
+		<li class="nav-item">
+			<a class={% if request.path.startswith('/maker-project') %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('maker_project.index') }}">Projects</a>
+		</li>  
+		{% endif %}
+          {% if current_user.is_authenticated %}  
+                {% if current_user.is_admin() %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
+                    </li>
+                {% endif %}
+                <li class="nav-item">
+                    <a class={% if request.path.startswith('/auth/user_settings') %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('auth.user_settings') }}">Settings</a>
+                </li>  
+        {% endif %}
+        {% if current_user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout ({{ current_user.username }})</a>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class={% if request.path.startswith('/auth') %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('auth.login') }}">Login</a>
+          </li>
+        {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>

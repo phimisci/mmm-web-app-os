@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Maker status report</h2>
+<p>The following files were selected during the <b>{{ selected_mmm }}</b> step:</p>
+<ul>
+    {% for file in selected_files %}
+        <li>{{ file }}</li>
+    {% endfor %}
+</ul>
+{% if selected_mmm == 'verifybibtex' %}
+    <div class="phimisci-verifybibtex-output">
+        <p>The following output was produced by VerifyBibTeX. For the details, please see the bibtex-analysis-status-report.txt in the project folder.</p>
+        {{ verifybibtex_html|safe }}
+
+    </div>
+{% endif %}
+<p style="margin-top: 3%;">
+    <a href="{{ url_for('maker_project.show_project_files', project_id=project_id)}}" class="phimisci-link-plain"><img src="{{ url_for('static', filename='icons/return.png')}}" class="phimisci-intext-icon" alt=""> Project files</a>
+</p>
+
+{% endblock %}

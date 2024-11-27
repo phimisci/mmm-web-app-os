@@ -1,0 +1,54 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+        <h2>XML2YAML</h2>
+        <p>Please provide the OJS-XML file (and optionally also additional information like year, artnum, etc.) to create & download a metadata file for the final production (in YAML format). You can download the article XML in the OJS.</p>
+
+        <form action="{{ url_for('maker.xml2yaml') }}" method="post" enctype="multipart/form-data" id="phimisci-form-field">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.file.label(class_='form-label') }}
+                {{ form.file(class_='form-control', accept='.xml') }}
+            </div>
+
+            <div class="mb-3">
+                {{ form.year.label(class_='form-label') }}
+                {{ form.year(class_='form-control') }}
+                <div id="yearHelp" class="form-text">Optional.</div>
+            </div>
+
+            <div class="mb-3">
+                {{ form.volume_number.label(class_='form-label') }}
+                {{ form.volume_number(class_='form-control') }}
+                <div id="volumeHelp" class="form-text">Optional.</div>
+            </div>
+
+            <div class="mb-3">
+                {{ form.artnum.label(class_='form-label') }}
+                {{ form.artnum(class_='form-control') }}
+                <div id="artnumHelp" class="form-text">Optional. Deprecated since 2024.</div>
+            </div>
+
+            <div class="mb-3">
+                {{ form.orcids.label(class_='form-label') }}
+                {{ form.orcids(class_='form-control') }}
+                <div id="orcidHelp" class="form-text">Optional. Usually, the ORCIDs should be included in the OJS XML. If you need to manually add them, use the follwing syntax (separate entries using semicolons): <i>Jurczyk=0000-0002-5943-2305; Wiese=0000-0003-3338-7398).</i>.</div>
+            </div>
+
+            <div class="mb-3">
+                {{ form.si_teaser.label(class_='form-label') }}
+                {{ form.si_teaser(class_='form-control') }}
+                <div id="siHelp" class="form-text">Optional. Only necessary if this article is part of a special issue.</div>
+            </div>
+          
+            {{ form.submit() }}
+        </form>
+
+        <p class="mt-3">
+            <a href="{{ url_for('maker.index') }}" class="link-offset-2 link-underline link-underline-opacity-25">
+                <i class="bi bi-arrow-left"></i> Back to Maker index
+            </a>
+        </p>
+
+{% endblock %}

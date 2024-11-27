@@ -1,0 +1,16 @@
+---IMPORTANT: This is an automatically generated email. Please do not reply to this email.---
+
+Hi {{ shared_user.username}},
+
+A "Magic Manuscript Maker" project named {{ project.project_name }} has been shared with you by {{ current_user.username }}.
+
+The following permissions have been granted to you (r=read permission; w=write permission; d=delete permission):
+
+{{ permissions }}
+
+To view this project, you can login to your account and view the project in the "Projects" section:
+
+{{ url_for('auth.login', _external=True) }}
+
+With best regards,
+Konrad Wichtig

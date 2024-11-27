@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Rename file {{ file_name }} </h2>
+    <form method="POST" action="{{ url_for('maker_project.rename_file', file_id=file_id) }}">
+        {{ form.hidden_tag() }}
+        <div>
+            {{ form.new_name.label(class_='form-label') }} {{ form.new_name(class_='form-control') }}
+        </div>
+        {{ form.submit(id='submit-phimisci', style='margin-top: 3%;') }}
+    </form>
+    <p style="margin-top: 3%;"><a href="{{ url_for('maker_project.show_project_files', project_id=project_id) }}" class="phimisci-link-plain"> <img src="{{ url_for('static', filename='icons/return.png')}}" class="phimisci-intext-icon" alt=""> Project files</a></p>
+{% endblock %}

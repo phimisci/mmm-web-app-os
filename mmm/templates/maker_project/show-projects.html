@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Project overview</h2>
+    <p>Below, you can see all your projects. You can download (ZIP) and delete projects here.</p>
+    <table class="phimisci-table">
+        {% for project in owned_projects %}
+                <tr>
+                    <td class="phimisci-wide-column">
+                        <a href="{{ url_for('maker_project.show_project_files', project_id=project.id) }}" class="phimisci-file-style">{{ project.project_name }}</a>
+                    </td>
+                    <td class="phimisci-small-column">
+                        <a href="{{ url_for('maker_project.rename_project', project_id=project.id) }}" class="phimisci-link-plain">&#x1F4DD;</a>
+                    </td>
+                    <td class="phimisci-small-column">
+                        <a href="{{ url_for('maker_project.download_folder', project_id=project.id, download_instruction='all') }}"><img src="{{ url_for('static', filename='icons/download.svg') }}" class="phimisci-responsive-image"></a>
+                    </td>
+                    <td class="phimisci-small-column">
+                        <a href="{{ url_for('maker_project.delete_project', project_id=project.id) }}" onclick="return confirmDelete()" class="phimisci-link-plain">&#10060;</a>
+                    </td>
+                </tr>    
+        {% endfor %}
+        {% for project in shared_projects %}
+        <tr>
+            <td class="phimisci-wide-column">
+                <a href="{{ url_for('maker_project.show_project_files', project_id=project.id) }}" class="phimisci-file-style">{{ project.project_name }} (shared with me)</a>
+            </td>
+            <td class="phimisci-small-column">
+                <a href="{{ url_for('maker_project.rename_project', project_id=project.id) }}" class="phimisci-link-plain">&#x1F4DD;</a>
+            </td>
+            <td class="phimisci-small-column">
+                <a href="{{ url_for('maker_project.download_folder', project_id=project.id, download_instruction='all') }}"><img src="{{ url_for('static', filename='icons/download.svg') }}" class="phimisci-responsive-image"></a>
+            </td>
+            <td class="phimisci-small-column">
+                <a href="{{ url_for('maker_project.delete_project', project_id=project.id) }}" onclick="return confirmDelete()" class="phimisci-link-plain">&#10060;</a>
+            </td>
+        </tr>    
+{% endfor %}
+    </table>
+    <p style="margin-top: 3%;"><a href="{{ url_for('maker_project.create_new_project') }}" class="phimisci-link-plain"><img src="{{ url_for('static', filename='icons/new_project.png')}}" class="phimisci-intext-icon" alt=""> New project</a></p>
+{% endblock %}

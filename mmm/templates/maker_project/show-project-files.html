@@ -1,0 +1,99 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Files in "{{ project.project_name }}"</h2>
+    <p class="phimisci-small-text">Click on a file to download it. Click on &#x1F4DD; to rename it. Click on &#10060; to delete it. You can also delete multiple files at the same time by using the checkboxes and pressing "Delete selected files".</p>
+    <p class="phimisci-small-text">This project is currently shared with:
+        {% for user in user_names %}
+            {{ user }}{% if not loop.last %}, {% endif %}
+        {% endfor %}.
+    </p>
+    <p class="phimisci-small-text">You currently have <b>{{ permission }}</b> permissions (<b>r</b>=read, <b>w</b>=write, <b>d</b>=delete).</p>
+    <p style="margin-top: 3%;" class="phimisci-small-text"><a href="{{ url_for('maker_project.share_project', project_id=project.id) }}" class="phimisci-link-plain">&#x1F517; Sharing options</a></p>
+
+    <!-- form is needed to delete multiple files simmultaneously -->
+
+    <form action="{{ url_for('maker_project.delete_multiple_files')}}" id="phimisci-file-selection-form" method="post">   
+        <!-- Include the CSRF token -->
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <!-- Show user and production files -->
+        <div class="row">
+            <div class="col-md-6">
+                <h3>User files <img src="{{ url_for('static', filename='icons/help.png')}}" class="phimisci-intext-icon" title="Files uploaded by the user." alt=""><a href="{{ url_for('maker_project.download_folder', project_id=project.id, download_instruction='user')}}"><img src="{{ url_for('static', filename='icons/download.svg') }}" class="phimisci-intext-icon"></a></h3>
+                <!-- User files -->
+                <table class="phimisci-table w-100">
+                    {% for file in files|sort(attribute='filename') if not file.production_file %}
+                            <tr>
+                                <td class="phimisci-small-column">
+                                    <input type="checkbox" id="{{ file.filename }}" name="file-selection" value="{{ file.id }}">
+                                </td>
+                                <td class="phimisci-wide-column">
+                                    <a href="{{ url_for('maker_project.download_file', file_id=file.id) }}" class="phimisci-file-style phimisci-small-text">{{ file.filename }}</a>
+                                </td>
+                                <td class="phimisci-small-column">
+                                    <a href="{{ url_for('maker_project.rename_file', file_id=file.id) }}" class="phimisci-link-plain">&#x1F4DD;</a>
+                                </td>
+                                <td class="phimisci-small-column">
+                                    <a href="{{ url_for('maker_project.delete_file', file_id=file.id) }}" onclick="return confirmDelete()" class="phimisci-link-plain">&#10060;</a>
+                                </td>
+                            </tr>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h3>Production files <img src="{{ url_for('static', filename='icons/help.png')}}" class="phimisci-intext-icon" title="Files produced during one of the Maker Processing steps." alt=""><a href="{{ url_for('maker_project.download_folder', project_id=project.id, download_instruction='production')}}"><img src="{{ url_for('static', filename='icons/download.svg') }}" class="phimisci-intext-icon"></a></h3>
+                <!-- Production files -->
+                <table class="phimisci-table w-100">
+                    {% for file in files|sort(attribute='filename') if file.production_file %}
+                            <tr>
+                                <td class="phimisci-small-column">
+                                    <input type="checkbox" id="{{ file.filename }}" name="file-selection" value="{{ file.id }}">
+                                </td>
+                                <td class="phimisci-wide-column">
+                                    <a href="{{ url_for('maker_project.download_file', file_id=file.id) }}" class="phimisci-file-style phimisci-small-text">{{ file.filename }}</a>
+                                </td>
+                                <td class="phimisci-small-column">
+                                    <a href="{{ url_for('maker_project.rename_file', file_id=file.id) }}" class="phimisci-link-plain">&#x1F4DD;</a>
+                                </td>
+                                <td class="phimisci-small-column">
+                                    <a href="{{ url_for('maker_project.delete_file', file_id=file.id) }}" onclick="return confirmDelete()" class="phimisci-link-plain">&#10060;</a>
+                                </td>
+                            </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <input type="submit" value="Delete selected files" style="margin-top: 3%;" id="phimisci-submit-btn" onclick="return confirmDelete()" disabled>
+    </form>
+
+
+    <!-- Upload files -->
+
+    <form method="POST" action="{{ url_for('maker_project.show_project_files', project_id=project.id) }}" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}
+        <p style="margin-top: 3%;">Upload file(s):</p>
+        <div>
+            {{ form.files.label(class_='form-label') }} {{ form.files(class_='form-control') }}
+        </div>
+        {{ form.submit(id='submit-phimisci', style='margin-top: 3%;') }}
+    </form>
+    <p style="margin-top: 3%;"><a href="{{ url_for('maker_project.mmm_selection', project_id=project.id) }}" class="phimisci-link-plain"> <img src="{{ url_for('static', filename='icons/build.png')}}" class="phimisci-intext-icon" alt=""> Maker processing</a></p>
+    <p style="margin-top: 3%;"><a href="{{ url_for('maker_project.show_user_projects') }}" class="phimisci-link-plain"> <img src="{{ url_for('static', filename='icons/return.png')}}" class="phimisci-intext-icon" alt=""> Project overview</a></p>
+
+    <script>
+        // JavaScript to enable the submit button only if at least one checkbox is checked
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('phimisci-file-selection-form');
+            const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+            const submitButton = document.getElementById('phimisci-submit-btn');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+                    submitButton.disabled = !isChecked;
+                });
+            });
+        });
+    </script>
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Share project "{{ project.project_name }}"</h2>
+    <p>Users with whom this project is already shared are marked with an asterisk (*). Behind the asterisk in brackets, you may find the permissions granted to that user (r=read, w=write, d=delete).</p>
+    <form method="POST" action="{{ url_for('maker_project.share_project', project_id=project.id) }}">
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+            {{ form.user.label(class_='form-label') }} {{ form.user(class_='form-control', id='phimisci-user-permission-selection') }}
+        </div>
+        <div class="mb-3">
+            {{ form.write_permission(class_='form-check-input', id='phimisci-write-permission-checkbox') }}
+            {{ form.write_permission.label(class_='form-check-label') }}
+        </div>
+        <div class="mb-3">
+            {{ form.delete_permission(class_='form-check-input', id='phimisci-delete-permission-checkbox') }}
+            {{ form.delete_permission.label(class_='form-check-label') }}
+        </div>
+        <div class="mb-3">
+            {{ form.revoke_permission(class_='form-check-input') }}
+            {{ form.revoke_permission.label(class_='form-check-label') }}
+        </div>
+        {{ form.submit(id='submit-phimisci', style='margin-top: 3%;') }}
+    </form>
+    <p style="margin-top: 3%;"><a href="{{ url_for('maker_project.show_project_files', project_id=project.id) }}" class="phimisci-link-plain"><img src="{{ url_for('static', filename='icons/return.png')}}" class="phimisci-intext-icon" alt=""> Project files</a></p>
+
+
+    <script>
+        // JavaScript to select checkboxes based on permissions of selected user
+        document.addEventListener('DOMContentLoaded', function () {
+            const userSelect = document.getElementById('phimisci-user-permission-selection');
+            const writeCheckbox = document.getElementById('phimisci-write-permission-checkbox');
+            const deleteCheckbox = document.getElementById('phimisci-delete-permission-checkbox');
+
+            userSelect.addEventListener('change', () => {
+                    // Check permissions of selected user
+                // Check permissions of selected user
+                const selectedUser = userSelect.options[userSelect.selectedIndex].text;
+                
+                // Permissions are stored in the last bracket of the option value
+                const permissionsMatch = selectedUser.match(/\(([^)]+)\)/);
+                console.log(permissionsMatch);
+
+                if (permissionsMatch) {
+                    const permissions = permissionsMatch[1];
+                    console.log(permissions);
+                    writeCheckbox.checked = permissions.includes('w');
+                    deleteCheckbox.checked = permissions.includes('d');
+                } else {
+                    // If no permissions are found, uncheck all checkboxes
+                    writeCheckbox.checked = false;
+                    deleteCheckbox.checked = false;
+                }
+            });
+        });
+    </script>
+{% endblock %}

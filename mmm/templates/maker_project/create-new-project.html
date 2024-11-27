@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2>Create new project</h2>
+
+<form method="POST" action="{{ url_for('maker_project.create_new_project') }}">
+	{{ form.hidden_tag() }}
+	<div>
+		{{ form.project_name.label(class_='form-label') }} {{ form.project_name(class_='form-control') }}
+	</div>
+	{{ form.submit(id='submit-phimisci', style='margin-top: 3%;') }}
+</form>
+
+<p style="margin-top: 3%;"><a href="{{ url_for('maker_project.show_user_projects') }}" class="phimisci-link-plain"><img src="{{ url_for('static', filename='icons/return.png')}}" class="phimisci-intext-icon" alt=""> Project overview</a></p>
+
+{% endblock %}

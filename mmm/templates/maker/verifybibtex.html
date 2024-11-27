@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+        <h2>VerifyBibTeX</h2>
+        <p>Please provide the BibTeX file containing the bibliography you would like to check. Afterwards, the Maker will create a report file including information about the bibliography in the BibTeX file, focusing on potential issues.</p>
+
+        <form action="{{ url_for('maker.verifybibtex') }}" method="post" enctype="multipart/form-data" id="phimisci-form-field">
+
+            {{ form.hidden_tag() }}
+            
+            <div class="mb-3">
+                {{ form.file.label(class_='form-label') }}
+                {{ form.file(class_='form-control',accept='.bib, .bibtex') }}
+            </div>
+            {{ form.submit() }}
+
+        </form>
+        <br>
+        <p class="mt-3">
+            <a href="{{ url_for('maker.index') }}" class="link-offset-2 link-underline link-underline-opacity-25">
+              <i class="bi bi-arrow-left"></i> Back to Maker index
+            </a>
+        </p>
+
+{% endblock %}

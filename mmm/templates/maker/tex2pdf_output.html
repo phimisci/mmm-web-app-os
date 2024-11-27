@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+        <h2>TEX2PDF</h2>
+        <p>The conversion was successful! You can now download the <a href="{{ url_for('maker.download_file', dir_path=dir_path, filename=pdf_file_name) }}">PDF</a> and <a href="{{ url_for('maker.download_file', dir_path=dir_path, filename=log_file_name) }}">.log</a>.</p>
+
+        <p class="mt-3">
+                <a href="{{ url_for('maker.index') }}" class="link-offset-2 link-underline link-underline-opacity-25">
+                    <i class="bi bi-arrow-left"></i> Back to Maker index
+                </a>
+        </p>
+
+{% endblock %}

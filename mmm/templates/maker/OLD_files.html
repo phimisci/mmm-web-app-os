@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+	<!-- Loading Animation; only switched on when pressing submit -->
+    <div id="loading-container-phimisci" style="display: none;">
+        <div id="loading-animation-phimisci" style="display: none;"></div>
+    </div>
+	
+
+	<!-- Content -->
+        <p>Successfully uploaded your files!</p>
+        <br>
+        <p>Uploaded Markdown File as: {{ md_file_name }}{%if md_file_name %}<span style="color: #06f106;">✓</span>{% else %}<span style="color: red;">✗</span>{% endif %}</p>
+        <p>Uploaded BibTeX File as: {{ bib_file_name }}{%if bib_file_name %}<span style="color: #06f106;">✓</span>{% else %}<span style="color: red;">✗</span>{% endif %}</p>
+        <p>Uploaded YAML-Metadata File as: {{ yml_file_name }}{%if yml_file_name %}<span style="color: #06f106;">✓</span>{% else %}<span style="color: red;">✗</span>{% endif %}</p>
+        <p>Uploaded Image Files: {% for image in image_files_list %} {{ image }}{%if image %}<span style="color: #06f106;">✓</span>{% else %}<span style="color: red;">✗</span>{% endif %}{{ "," if not loop.last }} {% endfor %}</p>
+        <br>
+        <p>Using BibLaTeX (beta){%if biblatex == True %}<span style="color: #06f106;">✓</span>{% else %}<span style="color: red;">✗</span>{% endif %}</p>
+        <p>Using Compund-Word filter (beta){%if compound == True %}<span style="color: #06f106;">✓</span>{% else %}<span style="color: red;">✗</span>{% endif %}</p>
+        <br>
+        {% if md_file_name and bib_file_name and yml_file_name %}
+            <form action="{{ url_for('maker.create_files') }}" method="post">
+                <input type="hidden" name="dir_path" value="{{ dir_path }}">
+                <input type="hidden" name="yml_file_name" value="{{ yml_file_name }}">
+                <input type="hidden" name="md_file_name" value="{{ md_file_name }}">
+                {% if biblatex %}
+                    <input type="hidden" name="biblatex" value="biblatex">
+                {% endif %}
+                {% if compound %}
+                    <input type="hidden" name="compound" value="compound">
+                {% endif %}
+                <button type="submit" onClick="startLoadingAnimation()" id="submit-phimisci">Create files</button>
+            </form>
+        {% endif %}
+        <br>
+
+        <a href="{{ url_for('maker.dw') }}">Return to uploads</a>
+
+{% endblock %}

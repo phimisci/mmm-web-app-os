@@ -1,0 +1,37 @@
+{% extends "layout.html" %} {% block content %}
+
+  <h2>DOC2MD</h2>
+  <p>
+    Please submit the original file in either docx or odt format. It will be
+    converted to Markdown, with basic cleaning included. Afterwards, you can download the clean markdown file, the original markdown file, as well as a log-file documenting potential issues.
+  </p>
+
+  <form
+    action="{{ url_for('maker.doc2md') }}"
+    method="post"
+    enctype="multipart/form-data"
+    id="phimisci-form-field">
+
+    {{ form.hidden_tag() }}
+
+    <div class="mb-3">
+      {{ form.file.label(class_='form-label') }}
+      {{ form.file(class_='form-control', accept='.doc, .docx, .odt') }}      
+    </div>
+
+    <div class="form-check mb-3">
+      {{ form.zotero_used.label(class_='form-check-label') }}
+      {{ form.zotero_used(class_='form-check-input') }}
+    </div>
+
+    {{ form.submit() }}
+  </form>
+
+  <p class="mt-3">
+    <a href="{{ url_for('maker.index') }}" class="link-offset-2 link-underline link-underline-opacity-25">
+      <i class="bi bi-arrow-left"></i> Back to Maker index
+    </a>
+  </p>
+ 
+
+{% endblock %}
