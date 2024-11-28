@@ -65,8 +65,6 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
     # If file was selected, continue with Maker step selection
     if mmm_choice == "doc2md":
         doc = selected_files[0]
-        # TODO: implement checks if file correct
-        # TODO: implement Zotero integration
         # Check if file is doc(x) or odt
         if not doc.split(".")[-1].lower() in ["doc", "docx", "odt"]:
             return "Please pass a doc(x) or odt file to DOC2MD!"
@@ -74,7 +72,7 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
             res = create_files_doc2md(dir_path, doc, zotero_used)
             if res:
                 # Register files in DB
-                # Currently produced files by DOC2MD: raw_markdown.md, clean_markdown.md
+                # Currently produced files by DOC2MD: raw_markdown.md, clean_markdown.md, doc2md.log
                 if os.path.exists(f"{os.getcwd()}/{dir_path}/raw_markdown.md"):
                     register_file_in_db("raw_markdown.md", project_id, True)
                 if os.path.exists(f"{os.getcwd()}/{dir_path}/clean_markdown.md"):
@@ -386,14 +384,8 @@ def file_exists(filename: str, project_id: int) -> str:
                 os.rename(f"{project_path}/{current_project.project_name}/{old_filename}", f"{project_path}//{current_project.project_name}/{filename}")
                 found = True
 
-def get_all_projects_for_user(user_id: int) -> Tuple[List[Project],List[Project]]:
-    '''Function to get all projects for a user.
-
-        Arguments
-        ---------
-
-        user_id : int
-            User ID of the user for which projects are to be fetched.
+def get_all_projects_for_user() -> Tuple[List[Project],List[Project]]:
+    '''Function to get all projects for current user.
 
         Returns
         -------

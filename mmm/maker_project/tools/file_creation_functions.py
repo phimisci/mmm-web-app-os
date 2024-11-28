@@ -1,6 +1,6 @@
 import string, os, random, subprocess, zipfile
 from datetime import datetime
-from typing import List, Optional
+from typing import List
 from flask import current_app
 from flask_login import current_user
 import shutil
@@ -28,7 +28,7 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
 
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
 
-    # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
+    # Run docker container
     if not zotero_used:
         docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", current_app.config.get('DOC2MD_IMAGE'), doc_file_name]
     else:

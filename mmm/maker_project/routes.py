@@ -319,7 +319,7 @@ def show_project_files(project_id):
 def show_user_projects():
     if request.method == 'GET':
         # Get all projects for current user
-        owned_projects_list, shared_projects_list = get_all_projects_for_user(current_user.id)
+        owned_projects_list, shared_projects_list = get_all_projects_for_user()
         return render_template("maker_project/show-projects.html", owned_projects=owned_projects_list, shared_projects=shared_projects_list)
 
 #### FILES ROUTES
