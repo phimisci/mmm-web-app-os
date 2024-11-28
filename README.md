@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This is the web application for the Magic Manuscript Maker (MMM) project. The MMM project is a tool that helps researchers to create manuscripts for scientific publications. The web application is a Flask-based web application that allows users to create projects, upload files, and share projects with other users.
+This is the web application for the Magic Manuscript Maker (MMM) project. The MMM project is a tool that helps researchers to create manuscripts for scientific publications. The web application is a Flask-based web application that allows users to create projects, upload files, and share projects with other users. The Magic Manuscript Maker was built using Flask and Docker. Even though it comes with default templates and settings, it is highly customizable and can be extended to fit your needs. The web application can either be run locally or deployed to a server.
 
 The web application channels the four separate modules VerifyBibTeX-OS, XML2YAML-OS, DOC2MD-OS, and the Typesetting Container OS into a single web application. Consequently, when you want to use the web application, you need to make sure that the four modules are available as Docker containers.
 

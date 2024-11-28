@@ -26,7 +26,7 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
     ## This program uses docker in docker. When calling the original docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
     ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example)
 
-    HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path)
+    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
 
     # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
     if not zotero_used:
@@ -96,7 +96,7 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
     ## This program uses docker in docker. When calling the original docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
     ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example)
 
-    HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
+    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
     # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
     docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/article", current_app.config.get('TYPESETTING_IMAGE'), yml_file_name, md_file_name]
@@ -143,7 +143,7 @@ def create_files_tex2pdf(dir_path: str, tex_file_name: str) -> bool:
     ## This program uses docker in docker. When calling the original docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
     ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example)
 
-    HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
+    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
     # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
     docker_command = ["docker", "run","--rm", "-v", f"{HOST_UPLOAD_DIR}:/app/output", "-v", f"{HOST_UPLOAD_DIR}/{tex_file_name}:/app/{tex_file_name}", "-v", f"{HOST_UPLOAD_DIR}/article:/app/article" , "registry.git.noc.ruhr-uni-bochum.de/phimisci/tex2pdf/0.0.2:latest", tex_file_name]
@@ -160,7 +160,7 @@ def create_files_tex2pdf(dir_path: str, tex_file_name: str) -> bool:
         print("Error in running container")
         return False
 
-def create_files_xml2yaml(dir_path: str, xml_file_name: str, artnum: str, volume_number: str, orcids: str, year: str, si_teaser: Optional[str]) -> bool:
+def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number: str, orcids: str, year: str, doi: str) -> bool:
     '''Function to call Docker container to create metadata.yaml file from uploaded OJS-XML.
 
         Parameters
@@ -170,7 +170,7 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, artnum: str, volume
             xml_file_name: str
                 The name of the XML file (needs to be in dir_path).
             argument_string: str
-                The additional arguments for the XML2YAML container (year, artnum, volume, etc.).
+                The additional arguments for the XML2YAML container (year, volume, doi etc.).
 
         Returns
         -------
@@ -179,29 +179,29 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, artnum: str, volume
 
     ## DIFFICULT PART!
     ## This program uses docker in docker. When calling the original docker container
-    ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example that NEEDS to exist on the HOST)
+    ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable or the mmm.cfg when creating the container (UPLOAD_PATH must exist on the HOST)
 
-    HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
+    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
+    ABS_FILE_PATH = os.path.join(HOST_UPLOAD_DIR, xml_file_name)
 
-    # docker run --rm docker run --rm -v $(pwd):/app
-    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/xml", current_app.config.get('XML2YAML_IMAGE'), xml_file_name]
+    # Docker command for XML2YAML-OS
+    # See https://github.com/phimisci/xml2yaml-os
+    docker_command = ["docker", "run","--rm", "--volume", f"{ABS_FILE_PATH}:/app/xml_input/{xml_file_name}" ,"--volume", f"{HOST_UPLOAD_DIR}:/app/yaml_output", current_app.config.get('XML2YAML_IMAGE'), xml_file_name]
 
-    ## adding additional optional arguments
-    ### year
+    ## Adding additional optional arguments
+    ## These arguments are depend on the configuration of XML2YAML-OS
+    ### Year
     if year != "":
         docker_command.extend(["--year", year])
-    ### artnum
-    if artnum != "":
-        docker_command.extend(["--artnum", artnum])
-    ### volume
+    ### Volume
     if volume_number != "":
         docker_command.extend(["--volume", volume_number])
-    ### orcid
+    ### ORCIDs
     if orcids != None:
         docker_command.extend(["--orcid", orcids])
-    ### special-issue teaser text
-    if si_teaser != None:
-        docker_command.extend(["--specialissue", f'*{si_teaser}*'])
+    ### DOI
+    if doi != None:
+        docker_command.extend(["--doi", f'{doi}'])
 
     # running docker container
     result = subprocess.run(docker_command)
@@ -237,12 +237,12 @@ def create_verifybibtex_report(dir_path: str, bibtex_file: str = "bib.bib") -> b
     ## This program uses docker in docker. When calling the original docker container
     ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example that NEEDS to exist on the HOST)
 
-    HOST_UPLOAD_DIR = os.path.join(os.environ.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
+    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
-    # docker run --rm docker run --rm -v $(pwd):/app/report
+    # Docker run --rm docker run --rm -v $(pwd):/app/report
     docker_command = ["docker", "run","--rm", "-e", f"BIBTEX_FILE={bibtex_file}", "--volume", f"{HOST_UPLOAD_DIR}:/app/report", current_app.config.get('VERIFYBIBTEX_IMAGE')]
 
-    # running docker container
+    # Running docker container
     result = subprocess.run(docker_command)
 
     # check if the command was successful

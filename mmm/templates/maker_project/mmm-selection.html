@@ -47,11 +47,6 @@
     <div id="hiddenXML2YAMLField" style="display: None;">
         <p style="margin-top: 3%;">Add additional information for <b>XML2YAML</b>:</p>
         <div class="mb-3">
-            {{ form.artnum.label(class_='form-label') }}
-            {{ form.artnum(class_='form-control') }}
-            <div id="artnumHelp" class="form-text">Optional. Deprecated since 2024.</div>
-        </div>
-        <div class="mb-3">
             {{ form.volume_number.label(class_='form-label') }}
             {{ form.volume_number(class_='form-control') }}
         </div>
@@ -65,9 +60,9 @@
             {{ form.year(class_='form-control') }}
         </div>
         <div class="mb-3">
-            {{ form.si_teaser.label(class_='form-label') }}
-            {{ form.si_teaser(class_='form-control') }}
-            <div id="siHelp" class="form-text">Optional. Only necessary if this article is part of a special issue.</div>
+            {{ form.doi.label(class_='form-label') }}
+            {{ form.doi(class_='form-control') }}
+            <div id="doiHelp" class="form-text">Optional. Pass DOI of article if not in OJS XML.</div>
         </div>
     </div>
 

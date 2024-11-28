@@ -28,12 +28,11 @@ class MMMDynamicForm(FlaskForm):
         ('tex2pdf', 'Create a PDF from a <b>TeX file</b> (<b>TEX2PDF</b>).'),
     ], validators=[DataRequired()])
     # Additional information for XML2YAML:
-    # artnum: str, volume_number: str, orcids: str, year: str, si_teaser: Optional[str]
-    artnum = StringField('Article number')
+    # volume_number: str, orcids: str, year: str, doi: str
     volume_number = StringField('Volume number')
     orcids = StringField('ORCIDs')
     year = StringField('Year')
-    si_teaser = StringField('Special Issue teaser')
+    doi = StringField('DOI')
     submit = SubmitField('Create files')
     # Additional information for DOC2MD:
     zotero_used = BooleanField('Zotero used')

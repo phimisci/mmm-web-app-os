@@ -8,7 +8,7 @@ from flask_login import current_user
 from flask import render_template, current_app
 from datetime import datetime
 import random, shutil, markdown2
-from mmm.maker.tools import create_files_doc2md, create_verifybibtex_report, create_files_tex2pdf, create_files_xml2yaml, create_files_dw
+from .file_creation_functions import create_files_doc2md, create_verifybibtex_report, create_files_tex2pdf, create_files_xml2yaml, create_files_dw
 from flask_mail import Message
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'doc', 'docx', 'yml', 'yaml', 'md', 'markdown', 'txt', 'tex', 'pdf', 'bib', 'bibtex', 'xml', 'odt'}
@@ -141,8 +141,7 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
         # Check if file is xml
         if not xml_file.split(".")[-1].lower() in ["xml"]:
             return "Please pass an xml file to XML2YAML!"
-        # TODO: need to add other arguments, such as artnum: str, volume_number: str, orcids: str, year: str, si_teaser: Optional[str]
-        res = create_files_xml2yaml(dir_path, xml_file, xml2yaml_data["artnum"], xml2yaml_data["volume_number"], xml2yaml_data["orcids"], xml2yaml_data["year"], xml2yaml_data["si_teaser"])
+        res = create_files_xml2yaml(dir_path, xml_file, xml2yaml_data["volume_number"], xml2yaml_data["orcids"], xml2yaml_data["year"], xml2yaml_data["doi"])
         if res:
             # Currently produced files by XML2YAML: yaml-metadata.yaml
             if os.path.exists(f"{os.getcwd()}/{dir_path}/metadata.yaml"):
@@ -416,14 +415,14 @@ def get_xml2yaml_data(form: MMMDynamicForm) -> dict:
 
         Returns
         -------
-        dict : Dictionary containing the data.
+        dict
+            Dictionary containing the data.
     '''
     data = {}
-    data["artnum"] = form.artnum.data 
     data["volume_number"] = form.volume_number.data
     data["orcids"] = " ".join([orcid.strip() for orcid in form.orcids.data.split(";")]) if form.orcids.data != "" else None
     data["year"] = form.year.data
-    data["si_teaser"] = form.si_teaser.data if form.si_teaser.data != "" else None 
+    data["doi"] = form.doi.data if form.doi.data != "" else None 
     return data
 
 def register_file_in_db(filename: str, project_id: int, production_file: bool):

@@ -15,7 +15,7 @@ mail = Mail()
 migrate = Migrate()
 
 def create_app() -> Flask:
-    '''Main function to create the Flask app. This function initializes the app, sets the configuration, and registers the blueprints, extensions, and login manager. It also sets up logging. This function is used in the main ws
+    '''Main function to create the Flask app. This function initializes the app, sets the configuration, and registers the blueprints, extensions, and login manager. It also sets up logging. This function is used in the wsgi.py file.
 
     Returns
     -------
@@ -89,9 +89,6 @@ def create_app() -> Flask:
 
     from mmm.auth import auth
     app.register_blueprint(auth)
-
-    from mmm.maker import maker
-    app.register_blueprint(maker)
     
     from mmm.maker_project import maker_project
     app.register_blueprint(maker_project)

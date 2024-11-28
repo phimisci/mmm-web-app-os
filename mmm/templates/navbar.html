@@ -11,11 +11,6 @@
           <li class="nav-item">
             <a class={% if request.path == '/' %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('main.index') }}">Home</a>
           </li>
-          {% if current_user.is_authenticated %}  
-                <li class="nav-item">
-                    <a class={% if request.path.startswith('/maker/') %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('maker.index') }}">Maker</a>
-                </li>  
-        {% endif %}
 		{% if current_user.is_authenticated %}  
 		<li class="nav-item">
 			<a class={% if request.path.startswith('/maker-project') %}"nav-link active-phimisci"{% else %}"nav-link"{% endif %} href="{{ url_for('maker_project.index') }}">Projects</a>
