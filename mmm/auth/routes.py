@@ -29,7 +29,7 @@ def logout():
 def login():
     if current_user.is_authenticated:
         flash('You are already logged in.', 'info')
-        return redirect(url_for('main.select_maker'))
+        return redirect(url_for('maker_project.index'))
     form = LoginForm()
     if form.validate_on_submit():
         username = request.form.get('username')
@@ -43,7 +43,7 @@ def login():
         # logging
         username: str = current_user.username if current_user.is_authenticated else "Anonymous"
         current_app.logger.info(f"User {username} now logged in.")
-        return redirect(url_for('main.select_maker'))
+        return redirect(url_for('maker_project.index'))
     if form.errors:
         flash(form.errors, 'danger')
     return render_template('auth/login.html', form=form)

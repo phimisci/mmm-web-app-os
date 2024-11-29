@@ -15,8 +15,8 @@
 
 /* Colors */
 :root {
-    --phimisci-red: rgba(252,18,33,0.65);
-    --phimisci-yellow: rgba(255,215,0,0.60);
+    --mmm-secondary-color: rgba(235, 107, 6, 1);
+    --mmm-main-color: rgba(6,190,235,1);
 }
 
 /* Text properties */
@@ -36,9 +36,12 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Roboto';
 }
 
+a {
+    color: var(--mmm-main-color);
+}
 
 a.active-phimisci {
-    color: var(--phimisci-red)!important;
+    color: var(--mmm-secondary-color)!important;
 }
 
 /* Navbar */
@@ -72,7 +75,7 @@ div.main-title-div {
     justify-content: center;
     align-items: center;
     gap: 0.625rem;
-    background: var(--phimisci-yellow);
+    background: var(--mmm-main-color);
 }
 
 
@@ -106,7 +109,7 @@ div.main-title-div {
 
 #loading-animation-phimisci {
     border: 4px solid rgba(0, 0, 0, 0.1); /* Rand des Kreises */
-    border-top: 4px solid var(--phimisci-yellow); /* Farbe des drehenden Teils */
+    border-top: 4px solid var(--mmm-main-color); /* Farbe des drehenden Teils */
     border-radius: 50%; /* Kreisform */
     width: 15vw; /* Breite des Kreises relativ zur Bildschirmbreite */
     height: 15vw; /* Höhe des Kreises relativ zur Bildschirmbreite */
