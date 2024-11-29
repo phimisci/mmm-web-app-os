@@ -1,6 +1,6 @@
 import string, os, random, subprocess, zipfile
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from flask import current_app
 from flask_login import current_user
 import shutil
@@ -46,7 +46,7 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
         print("Error in running container")
         return False
 
-def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex_file_name: str = "default", biblatex: bool = False, compound: bool = False) -> bool:
+def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex_file_name: Optional[str] = None, filename: str = "default") -> bool:
     '''Function to call Docker container to create output files from uploaded files.
 
         Parameters
@@ -60,57 +60,34 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
             yml_file_name: str
                 The name of the yaml file (needs to be in dir_path).
 
-            bibtex_file_name: str
-                The name of the bibtex file (needs to be in dir_path). Only need to be passed if it differs from md_file_name.
+            bibtex_file_name: Optional[str]
+                The name of the bibtex file (needs to be in dir_path).
 
-            biblatex: bool
-                Indicate whether BibLaTeX should be used instead of citeproc.
-
-            compound: bool
-                Indicate whether the article should use compound-word filter (replacing -- with \\babelhypen{hard}).
+            filename: str
+                The name of the output files (default: "default").
 
         Returns
         -------
             bool: True if the file has successfully been created, else False.
     '''
-
-
-    ## check bibtex file
-    ## if bibtex_file_name is not default, we need to check if the file exists
-    ## and create a copy of it with the same name as the md file
-    ## this is necessary because the container expects the bibtex file to have the same name as the md file
-    if bibtex_file_name != "default":
-        bibtex_file_path = os.path.join("/app", dir_path, bibtex_file_name)
-        if not os.path.exists(bibtex_file_path):
-            print("BIBTEX FILE NOT FOUND")
-            docker_logger_error("MAKER", "Could not find BibTeX file.")
-            return False
-        # we need to create a copy of bibtex file with new name
-        # get file name without extension
-        md_file_name_no_extension = os.path.splitext(md_file_name)[0]
-        bib_file_name_no_extension = os.path.splitext(bibtex_file_name)[0]
-        if md_file_name_no_extension != bib_file_name_no_extension:
-            shutil.copy(bibtex_file_path, os.path.join("/app", dir_path, f"{md_file_name_no_extension}.bib"))
         
     ## DIFFICULT PART!
-    ## This program uses docker in docker. When calling the original docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
+    ## This program uses docker in docker. When calling the tpyesetting-container-os container
     ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example)
 
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
-    # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
-    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/article", current_app.config.get('TYPESETTING_IMAGE'), yml_file_name, md_file_name]
+    # Run docker typesetting-container-os
+    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/article", current_app.config.get('TYPESETTING_IMAGE'), "--metadata_file", yml_file_name, "--markdown_file", md_file_name, "--filename", filename]
 
-    ## adding additional optional arguments
-    ### biblatex
-    if biblatex == True:
-        print("BIBLATEX")
-        docker_command.extend(["--biblatex"])
-    ### compound
-    if compound == True:
-        print("COMPOUND")
-        docker_command.extend(["--compound"])
-  
+    # Add bibtex file if it exists
+    if bibtex_file_name != None:
+        docker_command.extend(["--bibtex_file", bibtex_file_name])
+
+    # TODO: Select output files
+    # For now, we always create all output files
+    docker_command.extend(["--pdf", "--html", "--jats", "--tex"])
+
     result = subprocess.run(docker_command)
     
     # check if the command was successful

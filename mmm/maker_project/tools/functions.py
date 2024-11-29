@@ -148,53 +148,38 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
         else:
             return "Error creating files using XML2YAML."
     elif mmm_choice == "dw":
-        # Make sure that 3 files are passed: YAML, Markdown, BibTeX
-        if len(selected_files) != 3:
-            return "Please pass 3 files to DW: YAML, Markdown, and BibTeX."
+        # There shouldn't be more than 3 files selected for the typesetting step
+        if len(selected_files) > 3:
+            return "Please select only one YAML, Markdown, and BibTeX file to proceed with the typesetting module!"
+        # Two files are mandatory: YAML, Markdown
+        # One file is optional: BibTeX
         yaml_file = ""
         md_file = ""
-        bib_file = ""
+        bib_file: Optional[str] = None # Optional
         for file in selected_files:
+            # We only take the first yaml file, markdown file, and bib file
             if file.split(".")[-1].lower() in ["yaml", "yml"]:
                 yaml_file = file
             elif file.split(".")[-1].lower() in ["md", "markdown"]:
                 md_file = file
             elif file.split(".")[-1].lower() in ["bib", "bibtex"]:
                 bib_file = file
-        if yaml_file == "" or md_file == "" or bib_file == "":
+        if yaml_file == "" or md_file == "":
             return "Please pass a YAML, Markdown, and BibTeX file to DW!"
-        # Temporarily rename files in case file name value was passed
-        # This is necessary to create correct output files with Maker
-        if file_name:
-            current_project = Project.query.get(project_id)
-            # Rename markdown file
-            old_md_file = md_file
-            os.rename(f"uploads/{current_user.username}/{current_project.project_name}/{md_file}", f"uploads/{current_user.username}/{current_project.project_name}/{file_name}.md")
-            md_file = f"{file_name}.md"
-            # Rename BibTeX file
-            old_bib_file = bib_file
-            os.rename(f"uploads/{current_user.username}/{current_project.project_name}/{bib_file}", f"uploads/{current_user.username}/{current_project.project_name}/{file_name}.bib")
-            bib_file = f"{file_name}.bib"
+        # Check if a file name was passed; if not use the name of the Markdown file
+        if not file_name != None:
+            file_name = os.path.splitext(md_file)[0]
         # Proceed with creating files
-        res = create_files_dw(dir_path, md_file, yaml_file, bibtex_file_name=bib_file)
+        res = create_files_dw(dir_path, md_file, yaml_file, bibtex_file_name=bib_file, filename=file_name) if bib_file != None else create_files_dw(dir_path, md_file, yaml_file, filename=file_name)
         # Rename files back to original names if necessary
-        if file_name:
-            os.rename(f"uploads/{current_user.username}/{current_project.project_name}/{md_file}", f"uploads/{current_user.username}/{current_project.project_name}/{old_md_file}")
-            os.rename(f"uploads/{current_user.username}/{current_project.project_name}/{bib_file}", f"uploads/{current_user.username}/{current_project.project_name}/{old_bib_file}")
-            bib_file = old_bib_file
-            md_file = old_md_file
         if res:
             # Get file name from Markdown file if no file name was passed
             file_name = os.path.splitext(md_file)[0] if not file_name else file_name
             # Currently produced files by DW:
             if os.path.exists(f"{os.getcwd()}/{dir_path}/PROCESS.log"): 
                 register_file_in_db("PROCESS.log", project_id, True)
-            if os.path.exists(f"{os.getcwd()}/{dir_path}/{file_name}-proof.pdf"):
-                register_file_in_db(f"{file_name}-proof.pdf", project_id, True)
             if os.path.exists(f"{os.getcwd()}/{dir_path}/{file_name}.pdf"):
                 register_file_in_db(f"{file_name}.pdf", project_id, True)
-            if os.path.exists(f"{os.getcwd()}/{dir_path}/{file_name}.txt"):
-                register_file_in_db(f"{file_name}.txt", project_id, True)
             if os.path.exists(f"{os.getcwd()}/{dir_path}/{file_name}.html"):
                 register_file_in_db(f"{file_name}.html", project_id, True)
             if os.path.exists(f"{os.getcwd()}/{dir_path}/{file_name}.jats"):
