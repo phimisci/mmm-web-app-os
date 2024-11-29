@@ -38,6 +38,11 @@ class MMMDynamicForm(FlaskForm):
     zotero_used = BooleanField('Zotero used')
     # Additional possibility to create a custom file name for output files in Maker/DW step
     custom_file_name = StringField('Custom file name (optional)')
+    # Select output format for MAKER step
+    pdf_output = BooleanField('PDF')
+    html_output = BooleanField('HTML')
+    jats_output = BooleanField('JATS XML')
+    tex_output = BooleanField('TeX') 
     
 class RenameObject(FlaskForm):
     '''This form is used to rename a file or folder.'''

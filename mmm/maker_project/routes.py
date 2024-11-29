@@ -510,10 +510,20 @@ def mmm_selection(project_id):
         dir_path = os.path.join(project.path, project.project_name)
         # Check if an optional file name was passed for Maker/DW step
         custom_file_name = form.custom_file_name.data
-        if custom_file_name != "":
-            res_str = create_files(dir_path, selected_files, selected_mmm, project_id, xml2yaml_data, zotero_used, custom_file_name)
+        # Get selected output formats for Maker/DW step
+        output_formats = []
+        if selected_mmm == "dw":
+            if form.pdf_output.data:
+                output_formats.append("pdf")
+            if form.html_output.data:
+                output_formats.append("html")
+            if form.jats_output.data:
+                output_formats.append("jats")
+            if form.tex_output.data:
+                output_formats.append("tex")
+            res_str = create_files(dir_path, selected_files, selected_mmm, project_id, xml2yaml_data, zotero_used, custom_file_name, output_formats=output_formats)
         else:
-            res_str = create_files(dir_path, selected_files, selected_mmm, project_id, xml2yaml_data, zotero_used)
+            res_str = create_files(dir_path, selected_files, selected_mmm, project_id, xml2yaml_data, zotero_used, custom_file_name)
         # Create flash message depending on result
         if res_str == "true":
             # Create HTML output for VerifyBibTeX step

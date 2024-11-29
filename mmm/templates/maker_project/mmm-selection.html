@@ -18,7 +18,6 @@
         </div>
     {% endfor %}
 
-    <!-- Hidden forms for MAKER step -->
     <p style="margin-top: 3%;">Select <b>Maker</b> step here:</p>
     {% for subfield in form.mmm_choices %}
         <div>
@@ -35,11 +34,29 @@
         </div>
     </div>
 
+    <!-- Hidden forms for MAKER step -->
     <div id="hiddenMakerField" style="display: None;">
         <p style="margin-top: 3%;">Add optional file name for <b>Maker</b> output files:</p>
         <div class="mb-3">
             {{ form.custom_file_name.label(class_='form-label') }}
             {{ form.custom_file_name(class_='form-control') }}
+        </div>
+        <p style="margin-top: 3%;">Select output files created during the <b>Maker</b> step:</p>
+        <div>
+            {{ form.pdf_output(class_='form-check-input') }}
+            {{ form.pdf_output.label(class_='form-check-label') }}
+        </div>
+        <div>
+            {{ form.html_output(class_='form-check-input') }}
+            {{ form.html_output.label(class_='form-check-label') }}
+        </div>
+        <div>
+            {{ form.jats_output(class_='form-check-input') }}
+            {{ form.jats_output.label(class_='form-check-label') }}
+        </div>
+        <div>
+            {{ form.tex_output(class_='form-check-input') }}
+            {{ form.tex_output.label(class_='form-check-label') }}
         </div>
     </div>
 

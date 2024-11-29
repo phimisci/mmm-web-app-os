@@ -46,7 +46,7 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
         print("Error in running container")
         return False
 
-def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex_file_name: Optional[str] = None, filename: str = "default") -> bool:
+def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex_file_name: Optional[str] = None, filename: str = "default", output_formats: List[Optional[str]] = []) -> bool:
     '''Function to call Docker container to create output files from uploaded files.
 
         Parameters
@@ -66,6 +66,8 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
             filename: str
                 The name of the output files (default: "default").
 
+            output_formats: List[Optional[str]]
+                The output formats to be created (default: ["pdf", "html", "jats", "tex"]).
         Returns
         -------
             bool: True if the file has successfully been created, else False.
@@ -75,7 +77,7 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
     ## This program uses docker in docker. When calling the tpyesetting-container-os container
     ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example)
 
-    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
+    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
 
     # Run docker typesetting-container-os
     docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/article", current_app.config.get('TYPESETTING_IMAGE'), "--metadata_file", yml_file_name, "--markdown_file", md_file_name, "--filename", filename]
@@ -84,13 +86,18 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
     if bibtex_file_name != None:
         docker_command.extend(["--bibtex_file", bibtex_file_name])
 
-    # TODO: Select output files
-    # For now, we always create all output files
-    docker_command.extend(["--pdf", "--html", "--jats", "--tex"])
-
+    # Select output files
+    if output_formats == []:
+        # In this case, we create all output files
+        docker_command.extend(["--pdf", "--html", "--jats", "--tex"])
+    else: # In this case, we create only the specified output files
+        for format in output_formats:
+            docker_command.append(f"--{format.strip()}")
+    
+    # Running docker container
     result = subprocess.run(docker_command)
     
-    # check if the command was successful
+    # Check if the command was successful
     if result.returncode == 0:
         docker_logger_success("MAKER", dir_path)
         print("Container started successfully")

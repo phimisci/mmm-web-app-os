@@ -28,7 +28,7 @@ def allowed_file(filename: str) -> bool:
     '''
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, project_id: int, xml2yaml_data: dict, zotero_used: bool, file_name: Optional[str]=None) -> str:
+def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, project_id: int, xml2yaml_data: dict, zotero_used: bool, file_name: str, output_formats: List[Optional[str]] = []) -> str:
     '''Function to create files based on MMM-Project selections.
 
         Arguments
@@ -167,10 +167,10 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
         if yaml_file == "" or md_file == "":
             return "Please pass a YAML, Markdown, and BibTeX file to DW!"
         # Check if a file name was passed; if not use the name of the Markdown file
-        if not file_name != None:
+        if file_name == "":
             file_name = os.path.splitext(md_file)[0]
         # Proceed with creating files
-        res = create_files_dw(dir_path, md_file, yaml_file, bibtex_file_name=bib_file, filename=file_name) if bib_file != None else create_files_dw(dir_path, md_file, yaml_file, filename=file_name)
+        res = create_files_dw(dir_path, md_file, yaml_file, bibtex_file_name=bib_file, filename=file_name, output_formats=output_formats) if bib_file != None else create_files_dw(dir_path, md_file, yaml_file, filename=file_name, output_formats=output_formats)
         # Rename files back to original names if necessary
         if res:
             # Get file name from Markdown file if no file name was passed
