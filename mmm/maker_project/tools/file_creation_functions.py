@@ -239,13 +239,13 @@ def create_verifybibtex_report(dir_path: str, bibtex_file: str = "bib.bib") -> b
 
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
 
-    # Docker run --rm docker run --rm -v $(pwd):/app/report
+    # Run docker container
     docker_command = ["docker", "run","--rm", "-e", f"BIBTEX_FILE={bibtex_file}", "--volume", f"{HOST_UPLOAD_DIR}:/app/report", current_app.config.get('VERIFYBIBTEX_IMAGE')]
 
     # Running docker container
     result = subprocess.run(docker_command)
 
-    # check if the command was successful
+    # Check if the command was successful
     if result.returncode == 0:
         docker_logger_success("VERIFYBIBTEX", dir_path)
         print("Container started successfully")

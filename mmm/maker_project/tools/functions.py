@@ -96,8 +96,8 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
             res = create_verifybibtex_report(dir_path, bib)
             if res:
                 # Currently produced files by VERIFYBIBTEX: bibtex-analysis-status-report.txt
-                if os.path.exists(f"{os.getcwd()}/{dir_path}/bibtex-analysis-status-report.txt"):
-                    register_file_in_db("bibtex-analysis-status-report.txt", project_id, True)
+                if os.path.exists(f"{os.getcwd()}/{dir_path}/verifybibtex-report.md"):
+                    register_file_in_db("verifybibtex-report.md", project_id, True)
                 return "true"
             else:
                 return "Error creating files using VERIFYBIBTEX."
@@ -206,9 +206,9 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
             return "Error creating files using Maker."
 
 def create_html_verifybibtex(dir_path: str) -> str:
-    '''Function to create HTML file for VerifyBibTeX.
+    '''Function to create HTML file for VerifyBibTeX output.
 
-        Arguments
+        Parameters
         ---------
         dir_path : str
             Path to the project folder.
@@ -218,7 +218,7 @@ def create_html_verifybibtex(dir_path: str) -> str:
         str : The HTML output for the corresponding bibtex-analysis-status-report.txt file in dir_path.
     '''
     # Check if bibtex-analysis-status-report.txt exists
-    file_path = os.path.join(os.getcwd(), dir_path, "bibtex-analysis-status-report.txt")
+    file_path = os.path.join(os.getcwd(), dir_path, "verifybibtex-report.md")
     if not os.path.exists(file_path):
         return ""
     # Read file
