@@ -1,3 +1,7 @@
+# Copyright (c) 2024 Thomas Jurczyk
+# This software is provided under the MIT License.
+# For more information, please refer to the LICENSE file in the root directory of this project.
+
 from . import auth
 from mmm import db, login_manager
 from flask import request, render_template, redirect, url_for, flash, current_app

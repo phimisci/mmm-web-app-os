@@ -1,3 +1,7 @@
+# Copyright (c) 2024 Thomas Jurczyk
+# This software is provided under the MIT License.
+# For more information, please refer to the LICENSE file in the root directory of this project.
+
 from flask import request, render_template, redirect, flash, url_for, current_app, send_from_directory
 from . import maker_project
 from .tools import create_user_folder, create_new_project_func, get_all_projects_for_user, delete_project_from_db, allowed_file, file_exists, create_files, get_xml2yaml_data, create_html_verifybibtex, create_share_project_choices, send_email, critical_error_logger
