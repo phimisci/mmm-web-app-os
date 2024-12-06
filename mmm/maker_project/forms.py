@@ -29,7 +29,6 @@ class MMMDynamicForm(FlaskForm):
         ('verifybibtex', 'Check a <b>BibTeX file</b> for potential errors (<b>VerifyBibTeX</b>).'),
         ('xml2yaml', 'Create a <b>yaml metadata file</b> from OJS-XML (<b>XML2YAML</b>).'),
         ('dw', 'Create <b>production files</b> from yaml, bibtex, and markdown files (<b>Maker</b>).'),
-        ('tex2pdf', 'Create a PDF from a <b>TeX file</b> (<b>TEX2PDF</b>).'),
     ], validators=[DataRequired()])
     # Additional information for XML2YAML:
     # volume_number: str, orcids: str, year: str, doi: str

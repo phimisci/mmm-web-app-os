@@ -24,8 +24,8 @@ function highlightFiles(extension_list) {
             var file_extension = "";
         }
         if (extension_list.includes(file_extension)) {
-            // highlight file in green
-            files[i].style.backgroundColor = "#d4edda";
+            // highlight file in orange
+            files[i].style.backgroundColor = "#eb6b06";
         } else {
             files[i].style.backgroundColor = "#ffffff";
         }

@@ -11,8 +11,8 @@ from mmm import db, mail
 from flask_login import current_user
 from flask import render_template, current_app
 from datetime import datetime
-import random, shutil, markdown2
-from .file_creation_functions import create_files_doc2md, create_verifybibtex_report, create_files_tex2pdf, create_files_xml2yaml, create_files_dw
+import random, markdown2
+from .file_creation_functions import create_files_doc2md, create_verifybibtex_report, create_files_xml2yaml, create_files_dw
 from flask_mail import Message
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'doc', 'docx', 'yml', 'yaml', 'md', 'markdown', 'txt', 'tex', 'pdf', 'bib', 'bibtex', 'xml', 'odt'}
@@ -105,39 +105,6 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
                 return "true"
             else:
                 return "Error creating files using VERIFYBIBTEX."
-    elif mmm_choice == "tex2pdf":
-        # Check which files (TeX + images) have been passed
-        tex_file_name = ""
-        image_filename_list = []
-        for filename in selected_files:
-            if filename.split(".")[-1].lower() in ["tex"]:
-                tex_file_name = filename
-            elif filename.split(".")[-1].lower() in ["png", "jpg", "jpeg"]:
-                image_filename_list.append(filename)
-        # Check if file is tex
-        if tex_file_name == "":
-            return "Please pass a tex file to TEX2PDF!"
-        else:
-            # Create subfolder for images
-            os.makedirs(f"{dir_path}/article", exist_ok=True)
-            # If images have been passed, copy them to article/ folder
-            for img_filename in image_filename_list:
-                shutil.copy(f"{dir_path}/{img_filename}", f"{dir_path}/article/{img_filename}")
-            # Create files
-            res = create_files_tex2pdf(dir_path, tex_file_name)
-            # Delete article/ folder
-            # This causes problems when running MAKER step, since it expects only files in dir_path
-            shutil.rmtree(f"{dir_path}/article")
-            if res:
-                # Currently produced files by TEX2PDF: pdf
-                tex_file_name_no_ext = os.path.splitext(tex_file_name)[0]
-                if os.path.exists(f"{os.getcwd()}/{dir_path}/{tex_file_name_no_ext}.pdf"):
-                    register_file_in_db(f"{tex_file_name_no_ext}.pdf", project_id, True)
-                if os.path.exists(f"{os.getcwd()}/{dir_path}/{tex_file_name_no_ext}.log"):
-                    register_file_in_db(f"{tex_file_name_no_ext}.log", project_id, True)
-                return "true"
-            else:
-                return "Error creating files using TEX2PDF."
     elif mmm_choice == "xml2yaml":
         xml_file = selected_files[0]
         # Check if file is xml

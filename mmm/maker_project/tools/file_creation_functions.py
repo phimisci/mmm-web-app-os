@@ -111,43 +111,6 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
         print("Error in running container")
         return False
 
-def create_files_tex2pdf(dir_path: str, tex_file_name: str) -> bool:
-    '''Function to call Docker container to create PDF file from uploaded TeX file.
-
-        Parameters
-        ----------
-            dir_path: str
-                The path to the directory where the uploaded files are stored.
-                
-            tex_file_name: str
-                The name of the TeX file (needs to be in dir_path).
-        
-        Returns
-        -------
-            bool: True if the file has successfully been created, else False.
-    '''
-
-    ## DIFFICULT PART!
-    ## This program uses docker in docker. When calling the original docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
-    ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable when creating the container (UPLOAD_PATH in this example)
-
-    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
-
-    # docker run --rm --volume "$(pwd):/app/article" --user $(id -u):$(id -g) registry.git.noc.ruhr-uni-bochum.de/phimisci/phimisci-typesetting-container/0.0.1:latest <METADATA>.yaml <ARTICLE>.md
-    docker_command = ["docker", "run","--rm", "-v", f"{HOST_UPLOAD_DIR}:/app/output", "-v", f"{HOST_UPLOAD_DIR}/{tex_file_name}:/app/{tex_file_name}", "-v", f"{HOST_UPLOAD_DIR}/article:/app/article" , "registry.git.noc.ruhr-uni-bochum.de/phimisci/tex2pdf/0.0.2:latest", tex_file_name]
-    
-    result = subprocess.run(docker_command)
-    
-    # check if the command was successful
-    if result.returncode == 0:
-        docker_logger_success("TEX2PDF", dir_path)
-        print("Container started successfully")
-        return True
-    else:
-        docker_logger_error("TEX2PDF", dir_path)
-        print("Error in running container")
-        return False
-
 def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number: str, orcids: str, year: str, doi: str) -> bool:
     '''Function to call Docker container to create metadata.yaml file from uploaded OJS-XML.
 
