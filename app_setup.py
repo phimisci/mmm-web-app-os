@@ -3,7 +3,6 @@
 # For more information, please refer to the LICENSE file in the root directory of this project.
 
 from mmm import db, create_app
-import os
 from flask_migrate import upgrade
 from flask import current_app
 
