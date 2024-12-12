@@ -130,7 +130,7 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number: str,
 
     ## DIFFICULT PART!
     ## This program uses docker in docker. When calling the original docker container
-    ## we need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable or the mmm.cfg when creating the container (UPLOAD_PATH must exist on the HOST)
+    ## We need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable or the mmm.cfg when creating the container (UPLOAD_PATH must exist on the HOST)
 
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path) # TODO: use pathlib
     ABS_FILE_PATH = os.path.join(HOST_UPLOAD_DIR, xml_file_name)
@@ -166,6 +166,44 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number: str,
         docker_logger_error("XML2YAML", dir_path)
         print("Error in running container")
         return False
+    
+def create_files_tex2pdf(dir_path: str, tex_file_name: str) -> bool:
+    '''Function to call Docker container to create PDF file from uploaded TeX file.
+
+        Parameters
+        ----------
+            dir_path: str
+                The path to the directory where the uploaded files are stored.
+                
+            tex_file_name: str
+                The name of the TeX file (needs to be in dir_path).
+        
+        Returns
+        -------
+            bool: True if the file has successfully been created, else False.
+    '''
+
+    ## DIFFICULT PART!
+    ## This program uses docker in docker. When calling the original docker container
+    ## We need to make sure to mount the correct volume from the HOST system; to make sure this is the case, you NEED to pass this path explicitly in an environment variable or the mmm.cfg when creating the container (UPLOAD_PATH must exist on the HOST)
+
+    HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
+
+    # Create docker command
+    docker_command = ["docker", "run","--rm", "-v", f"{HOST_UPLOAD_DIR}:/app/output", "-v", f"{HOST_UPLOAD_DIR}/{tex_file_name}:/app/{tex_file_name}", "-v", f"{HOST_UPLOAD_DIR}/article:/app/article" , current_app.config.get('TEX2PDF_IMAGE'), tex_file_name]
+    
+    result = subprocess.run(docker_command)
+    
+    # Check if the command was successful
+    if result.returncode == 0:
+        docker_logger_success("TEX2PDF", dir_path)
+        print("Container started successfully")
+        return True
+    else:
+        docker_logger_error("TEX2PDF", dir_path)
+        print("Error in running container")
+        return False
+
 
 def create_verifybibtex_report(dir_path: str, bibtex_file: str = "bib.bib") -> bool:
     """Function to call VerifyBibTeX Docker container to create .yaml file from uploaded BibTeX file.

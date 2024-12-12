@@ -25,10 +25,11 @@ class MMMDynamicForm(FlaskForm):
     file_choices = FieldList(FormField(MMMChoiceForm))
     # Form for the main MMM choice
     mmm_choices = RadioField('Select a Maker step', choices=[
-        ('doc2md', 'Create <b>Markdown</b> file from DOC(X) or ODT files (<b>DOC2MD</B>).'),
-        ('verifybibtex', 'Check a <b>BibTeX file</b> for potential errors (<b>VerifyBibTeX</b>).'),
-        ('xml2yaml', 'Create a <b>yaml metadata file</b> from OJS-XML (<b>XML2YAML</b>).'),
-        ('dw', 'Create <b>production files</b> from yaml, bibtex, and markdown files (<b>Maker</b>).'),
+        ('doc2md', '1. Create <b>Markdown</b> file from DOC(X) or ODT files (<b>DOC2MD</B>).'),
+        ('verifybibtex', '2. Check a <b>BibTeX file</b> for potential errors (<b>VerifyBibTeX</b>).'),
+        ('xml2yaml', '3. Create a <b>YAML metadata file</b> from OJS-XML (<b>XML2YAML</b>).'),
+        ('dw', '4. Create <b>production files</b> from YAML, BibTeX, and Markdown files (<b>Maker</b>).'),
+        ('tex2pdf', '5. Optional step: Create a <b>PDF</b> from a TeX file (<b>TEX2PDF</b>).'),
     ], validators=[DataRequired()])
     # Additional information for XML2YAML:
     # volume_number: str, orcids: str, year: str, doi: str

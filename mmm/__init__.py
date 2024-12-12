@@ -64,6 +64,8 @@ def create_app() -> Flask:
         app.config['XML2YAML_IMAGE'] = os.environ['XML2YAML_IMAGE']
     if 'TYPESETTING_IMAGE' in os.environ:
         app.config['TYPESETTING_IMAGE'] = os.environ['TYPESETTING_IMAGE']
+    if 'TEX2PDF_IMAGE' in os.environ:
+        app.config['TEX2PDF_IMAGE'] = os.environ['TEX2PDF_IMAGE']
 
     # Register csrf
     csrf.init_app(app)

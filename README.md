@@ -38,6 +38,7 @@ First, you need to have docker installed. Aftwards, download this repository and
 - `XML2YAML_IMAGE`: The image name for the XML2YAML-OS module. Example: `ghcr.io/phimisci/xml2yaml-os:latest`
 - `DOC2MD_IMAGE`: The image name for the DOC2MD-OS module. Example: `ghcr.io/phimisci/doc2md-os:latest`
 - `TYPESETTING_IMAGE`: The image name for the Typesetting Container OS module. Example: `ghcr.io/phimisci/typesetting-container-os:latest`	
+- `TEX2PDF_IMAGE`: The image name for the TEX2PDF-OS module. Example: `ghcr.io/phimisci/tex2pdf-os:latest`
 
 Important note: Since some values such as `FLASK_ADMIN_USERNAME` and `FLASK_ADMIN_PASSWORD` are sensitive, you can use environment variables to set these values. If you do not want to use environment variables, you can set the values directly in the `mmm.cfg` file. In eithe case, the environment variables always have precedence over the values in the `mmm.cfg` file.
 
@@ -100,4 +101,8 @@ Note that only the project owner can delete an entire project.
 This application was developed by Thomas Jurczyk (thomjur on GitHub) for the journal [Philosophy and the Mind Sciences](https://philosophymindscience.org/) as part of a project funded by the German Research Foundation (DFG).
 
 ## Versions
+
+### Version 1.0.0
+
+- Initial release
 
