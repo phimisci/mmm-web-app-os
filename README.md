@@ -17,7 +17,7 @@ First, you need to have docker installed. Aftwards, download this repository and
 - `FLASK_ADMIN_PASSWORD`: The password for the initial admin account.
 - `SECRET_KEY`: The secret key for the Flask application.
 - `DEBUG`: Whether to run the Flask application in debug mode.
-- `SQLALCHEMY_DATABASE_URI`: The URI for the database.
+- `SQLALCHEMY_DATABASE_URI`: The URI for the database. Since the web application uses SQLAlchemy, you can use any database that is supported by SQLAlchemy (SQLite, PostgreSQL, etc.).
 - `LOG_FILE`: The path to the log file.
 - `MAX_CONTENT_LENGTH`: The maximum content length for file uploads.
 
@@ -59,7 +59,7 @@ If the database schema has been updated, follow these steps:
 
 1. Build new container that includes changed database schema (`docker-compose build`)
 2. Run `docker compose mmm-app run flask db migrate -m "migration message"`
-3. Start the container since `update()` should be run automatically-
+3. Start the container since `update()` should be run automatically.
 
 ## Usage
 
