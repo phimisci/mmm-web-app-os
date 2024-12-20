@@ -1,12 +1,14 @@
 # Magic Manuscript Maker Web Application OS (Version 1.0.0)
 
+This is the PhiMiSci version of the Magic Manuscript Maker Web Application.
+
 ## Introduction
 The Magic Manuscript Maker is a tool that helps publishers to create manuscripts for scientific publications. The Flask-based web application allows users to create projects, upload files, and share projects with other users. The Magic Manuscript Maker was built using Flask and Docker. Even though it comes with default templates and settings, it is highly customizable and can be extended to fit your needs. The web application can either be run locally or deployed to a server.
 
 The web application channels five separate modules into a single source publishing workflow with Pandoc:
 
 1. DOC2MD-OS: Converting DOCX files (with Zotero citations) into Markdown and BibTeX files.
-2. VerifyBibTeX-OS: Check the BibTeX file for potential provlems.
+2. VerifyBibTeX-OS: Check the BibTeX file for potential problems.
 3. XML2YAML-OS: Transform OJS-XML into a suitable metadata.yaml file that can be used along with the Markdown file to create the final publications.
 4. Typesetting Container OS: Render the article into the desired format (e.g., PDF, HTML, TEX, JATS).
 
