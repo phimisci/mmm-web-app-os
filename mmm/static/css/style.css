@@ -15,8 +15,8 @@
 
 /* Colors */
 :root {
-    --mmm-secondary-color: #eb6b06;
-    --mmm-main-color: rgba(6,190,235,1);
+    --mmm-secondary-color: rgba(252,18,33,0.65);
+    --mmm-main-color: rgba(255,215,0,0.60);
 }
 
 /* Text properties */
