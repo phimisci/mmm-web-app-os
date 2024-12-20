@@ -3,7 +3,6 @@
 # For more information, please refer to the LICENSE file in the root directory of this project.
 
 from mmm import db, create_app
-from flask_migrate import upgrade
 from flask import current_app
 
 def create_admin() -> None:
@@ -48,6 +47,4 @@ def search_admin_env() -> tuple:
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-        # Update database
-        upgrade()
         create_admin()
