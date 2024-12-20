@@ -9,14 +9,16 @@ from flask_login import LoginManager
 from flask_admin import Admin
 from flask_wtf.csrf import CSRFProtect
 from flask_mail import Mail
-from flask_migrate import Migrate
 
 db = SQLAlchemy()
 login_manager = LoginManager()
 flask_admin = Admin()
 csrf = CSRFProtect()
 mail = Mail()
-migrate = Migrate()
+
+def init_db(app):
+    with app.app_context():
+        db.create_all()
 
 def create_app() -> Flask:
     '''Main function to create the Flask app. This function initializes the app, sets the configuration, and registers the blueprints, extensions, and login manager. It also sets up logging. This function is used in the wsgi.py file.
@@ -75,9 +77,6 @@ def create_app() -> Flask:
 
     # Register database
     db.init_app(app)
-    
-    # Register migrate
-    migrate.init_app(app, db)
 
     # Add logging
     import logging
@@ -108,5 +107,8 @@ def create_app() -> Flask:
     flask_admin.init_app(app) 
 
     flask_admin.add_view(UserAdminView(User, db.session))
+
+    # Initialize the database schema
+    init_db(app)
 
     return app
