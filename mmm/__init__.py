@@ -34,8 +34,9 @@ def create_app() -> Flask:
 
     # Set config
     # Note: If you prefer to use environment variables for critical values, you can do so; environment variables will override the config file. 
+    # Assuming that this runs in a container with /app working folder
     try:
-        app.config.from_pyfile('../mmm.cfg')
+        app.config.from_pyfile('/app/mmm.cfg')
     except FileNotFoundError:
         print('Config file not found. You need to provide a config file "mmm.cfg" in the root directory. Shutting down.')
         exit(1)
