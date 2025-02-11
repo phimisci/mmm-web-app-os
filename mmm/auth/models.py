@@ -17,7 +17,7 @@ class User(UserMixin, db.Model):
     # Field to temporarily store a new not yet confirmed email address
     email_change = db.Column(db.String(100))
     # Salt stored for password reset
-    salt = db.Column(db.String(16))
+    salt = db.Column(db.String(32)) #  32 should actually be enough for os.urandom(16)
     pwdhash = db.Column(db.String())
     admin = db.Column(db.Boolean())
     
