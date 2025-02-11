@@ -35,6 +35,9 @@ class Project(db.Model):
     created_at = db.Column(db.DateTime, nullable=False)
     changed_at = db.Column(db.DateTime, nullable=False)
     
+    # Delete all shared project entries if this project is removed
+    user_projects = db.relationship('UserProject', backref='project', cascade="all, delete-orphan", passive_deletes=True)
+    
     def __init__(self, path, project_name, created_at, changed_at):
         self.path = path
         self.project_name = project_name
@@ -48,7 +51,7 @@ class UserProject(db.Model):
     __tablename__ = "user_projects"
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'), nullable=False)
+    project_id = db.Column(db.Integer, db.ForeignKey('projects.id', ondelete="CASCADE"), nullable=False)
     permission = db.Column(db.String(255), nullable=False)
     creator = db.Column(db.Boolean, nullable=False)
     
