@@ -410,8 +410,7 @@ def get_xml2yaml_data(form: MMMDynamicForm) -> dict:
     data["orcids"] = " ".join([orcid.strip() for orcid in form.orcids.data.split(";")]) if form.orcids.data != "" else None
     data["year"] = form.year.data
     data["doi"] = form.doi.data if form.doi.data != "" else None
-    data["special_issue"] = form.special_issue.data if form.special_issue.data
-        != "" else None
+    data["special_issue"] = form.special_issue.data if form.special_issue.data != "" else None
     return data
 
 def register_file_in_db(filename: str, project_id: int, production_file: bool):
