@@ -37,7 +37,7 @@ class MMMDynamicForm(FlaskForm):
     orcids = StringField('ORCIDs')
     year = StringField('Year')
     doi = StringField('DOI')
-    special_issue = StringField('SpecialIssue')
+    special_issue = StringField('Special Issue Teaser')
     submit = SubmitField('Create files')
     # Additional information for DOC2MD:
     zotero_used = BooleanField('Zotero used')
