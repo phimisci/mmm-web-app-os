@@ -81,6 +81,12 @@
             {{ form.doi(class_='form-control') }}
             <div id="doiHelp" class="form-text">Optional. Pass DOI of article if not in OJS XML.</div>
         </div>
+        <div class="mb-3">
+          {{ form.special_issue.label(class_='form-label' }}
+          {{ form.special_issue(class_='form-control')}}
+          <div id="siHelp" class="form-text">Optional. If this article is part
+            of a special issue, you can add the SI teaser here.</div>
+        </div>
     </div>
 
     {{ form.submit(id='submit-phimisci', onclick='startLoadingAnimation()', style='margin-top: 3%;') }}

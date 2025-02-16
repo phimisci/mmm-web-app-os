@@ -7,7 +7,6 @@ from datetime import datetime
 from typing import List, Optional
 from flask import current_app
 from flask_login import current_user
-import shutil
 from flask import current_app
 
 def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) -> bool:
@@ -111,7 +110,10 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
         print("Error in running container")
         return False
 
-def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number: str, orcids: str, year: str, doi: str) -> bool:
+def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number:
+                          Optional[str],
+                          orcids: Optional[str], year: Optional[str], doi:
+                          Optional[str], special_issue: Optional[str]) -> bool:
     '''Function to call Docker container to create metadata.yaml file from uploaded OJS-XML.
 
         Parameters
@@ -153,6 +155,9 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number: str,
     ### DOI
     if doi != None:
         docker_command.extend(["--doi", f'{doi}'])
+    ### SPECIAL ISSUE
+    if special_issue != None:
+        docker_command.extend(["--specialissue", special_issue])
 
     # running docker container
     result = subprocess.run(docker_command)

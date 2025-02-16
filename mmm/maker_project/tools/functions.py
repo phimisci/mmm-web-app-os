@@ -111,7 +111,11 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
         # Check if file is xml
         if not xml_file.split(".")[-1].lower() in ["xml"]:
             return "Please pass an xml file to XML2YAML!"
-        res = create_files_xml2yaml(dir_path, xml_file, xml2yaml_data["volume_number"], xml2yaml_data["orcids"], xml2yaml_data["year"], xml2yaml_data["doi"])
+        res = create_files_xml2yaml(dir_path, xml_file,
+                                    xml2yaml_data["volume_number"],
+                                    xml2yaml_data["orcids"],
+                                    xml2yaml_data["year"], xml2yaml_data["doi"],
+                                    xml2yaml_data["special_issue"])
         if res:
             # Currently produced files by XML2YAML: yaml-metadata.yaml
             if os.path.exists(f"{os.getcwd()}/{dir_path}/metadata.yaml"):
@@ -405,7 +409,9 @@ def get_xml2yaml_data(form: MMMDynamicForm) -> dict:
     data["volume_number"] = form.volume_number.data
     data["orcids"] = " ".join([orcid.strip() for orcid in form.orcids.data.split(";")]) if form.orcids.data != "" else None
     data["year"] = form.year.data
-    data["doi"] = form.doi.data if form.doi.data != "" else None 
+    data["doi"] = form.doi.data if form.doi.data != "" else None
+    data["special_issue"] = form.special_issue.data if form.special_issue.data
+        != "" else None
     return data
 
 def register_file_in_db(filename: str, project_id: int, production_file: bool):
