@@ -525,6 +525,8 @@ def mmm_selection(project_id):
                 output_formats.append("jats")
             if form.tex_output.data:
                 output_formats.append("tex")
+            if form.proof_output.data:
+                output_formats.append("proof")
             res_str = create_files(dir_path, selected_files, selected_mmm, project_id, xml2yaml_data, zotero_used, custom_file_name, output_formats=output_formats)
         else:
             res_str = create_files(dir_path, selected_files, selected_mmm, project_id, xml2yaml_data, zotero_used, custom_file_name)
@@ -536,7 +538,6 @@ def mmm_selection(project_id):
             flash('Files created successfully!', 'success')
         else:
             flash(f'An error occurred while creating files: {res_str}', 'danger')
-        # Debug rendering
         return render_template("maker_project/mmm-output.html", project_id=project_id, selected_files=selected_files, selected_mmm=selected_mmm, verifybibtex_html=verifybibtex_html)
     else:
         # Get all files and filenames from project folder

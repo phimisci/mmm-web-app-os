@@ -162,6 +162,8 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
                 register_file_in_db(f"{file_name}.jats", project_id, True)
             if os.path.exists(f"{os.getcwd()}/{dir_path}/{file_name}.tex"):
                 register_file_in_db(f"{file_name}.tex", project_id, True)
+            if os.path.exists(f"{os.getcwd()}/{dir_path}/{file_name}-PROOF.pdf"):
+                register_file_in_db(f"{file_name}-PROOF.pdf", project_id, True)
             return "true"
         else:
             return "Error creating files using Maker."

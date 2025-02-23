@@ -48,6 +48,7 @@ class MMMDynamicForm(FlaskForm):
     html_output = BooleanField('HTML')
     jats_output = BooleanField('JATS XML')
     tex_output = BooleanField('TeX') 
+    proof_output = BooleanField('PROOF')
     
 class RenameObject(FlaskForm):
     '''This form is used to rename a file or folder.'''

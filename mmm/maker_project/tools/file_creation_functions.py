@@ -70,7 +70,8 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
                 The name of the output files (default: "default").
 
             output_formats: List[Optional[str]]
-                The output formats to be created (default: ["pdf", "html", "jats", "tex"]).
+                The output formats to be created (default: ["pdf", "html",
+                "jats", "tex", "proof"]).
         Returns
         -------
             bool: True if the file has successfully been created, else False.
@@ -92,7 +93,7 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
     # Select output files
     if output_formats == []:
         # In this case, we create all output files
-        docker_command.extend(["--pdf", "--html", "--jats", "--tex"])
+        docker_command.extend(["--pdf", "--html", "--jats", "--tex", "--proof"])
     else: # In this case, we create only the specified output files
         for format in output_formats:
             docker_command.append(f"--{format.strip()}")
