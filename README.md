@@ -1,4 +1,4 @@
-# Magic Manuscript Maker Web Application OS (Version 1.0.0)
+# Magic Manuscript Maker Web Application OS (Version 1.0.2)
 
 This is the PhiMiSci version of the Magic Manuscript Maker Web Application.
 
@@ -149,6 +149,11 @@ Note that only the project owner can delete an entire project. If the email sett
 This application was developed by Thomas Jurczyk ([thomjur](https://github.com/thomjur) on GitHub) for the journal [Philosophy and the Mind Sciences](https://philosophymindscience.org/) as part of a project funded by the German Research Foundation (DFG).
 
 ## Versions
+
+### Version 1.0.2
+
+- small bugfix: added filter to processing pipeline (which were missing for some
+reason)
 
 ### Version 1.0.0
 

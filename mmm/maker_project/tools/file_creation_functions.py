@@ -84,7 +84,11 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
 
     # Run docker typesetting-container-os
-    docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/article", current_app.config.get('TYPESETTING_IMAGE'), "--metadata_file", yml_file_name, "--markdown_file", md_file_name, "--filename", filename]
+    docker_command = ["docker", "run","--rm", "--volume",
+                      f"{HOST_UPLOAD_DIR}:/app/article",
+                      current_app.config.get('TYPESETTING_IMAGE'),
+                      "--metadata_file", yml_file_name, "--markdown_file",
+                      md_file_name, "--filename", filename, "--filter ack-filter.lua pandoc-figref.lua"]
 
     # Add bibtex file if it exists
     if bibtex_file_name != None:
