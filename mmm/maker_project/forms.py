@@ -41,6 +41,11 @@ class MMMDynamicForm(FlaskForm):
     submit = SubmitField('Create files')
     # Additional information for DOC2MD:
     zotero_used = BooleanField('Zotero used')
+    bibliography_choices = RadioField('Select bibliography processing', choices=[
+        ('none', 'No external processing'),
+        ('zotero', 'Zotero was used inside Word'),
+        ('auto', 'Auto-encode citations based on bibliography file')
+    ], default='none', validators=[DataRequired()])
     # Additional possibility to create a custom file name for output files in Maker/DW step
     custom_file_name = StringField('Custom file name (optional)')
     # Select output format for MAKER step

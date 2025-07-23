@@ -9,7 +9,9 @@ from flask import current_app
 from flask_login import current_user
 from flask import current_app
 
-def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) -> bool:
+def create_files_doc2md(dir_path: str, doc_file_name: str, 
+                        bibliography_management: str,
+                        autobib_filename: str) -> bool:
     '''Function to call Docker container to create MD files from uploaded document file.
 
         Parameters
@@ -17,9 +19,14 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
             dir_path: str
                 The path to the directory where the uploaded files are stored.
             doc_file_name: str
-                The name of the document file (needs to be in dir_path; doc|docx|odt).
-            zotero_used: bool
-                Indicate whether Zotero was used to create the document file.
+                The name of the document file (needs to be in dir_path; 
+                doc|docx|odt).
+            bibliography_management: str
+                Indicate the choice of bibliography management 
+                (none|zotero|auto).
+            autobib_filename: str
+                File name of the bibliography database for automatic 
+                bibliography processing.
         Returns
         -------
             bool: True if the file has successfully been created, else False.
@@ -32,10 +39,23 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
 
     # Run docker container
-    if not zotero_used:
-        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", current_app.config.get('DOC2MD_IMAGE'), doc_file_name]
-    else:
-        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", current_app.config.get('DOC2MD_IMAGE'), "--zotero", doc_file_name]
+    if bibliography_management == "none":
+        docker_command = ["docker", "run","--rm", "--volume", 
+                          f"{HOST_UPLOAD_DIR}:/app/files", 
+                          current_app.config.get('DOC2MD_IMAGE'), doc_file_name]
+        
+    if bibliography_management == "zotero":
+        docker_command = ["docker", "run","--rm", "--volume", 
+                          f"{HOST_UPLOAD_DIR}:/app/files", 
+                          current_app.config.get('DOC2MD_IMAGE'), "--zotero", 
+                          doc_file_name]
+        
+    if bibliography_management == "auto":
+        docker_command = ["docker", "run","--rm", "--volume", 
+                          f"{HOST_UPLOAD_DIR}:/app/files", 
+                          current_app.config.get('DOC2MD_IMAGE'), 
+                          "--autobib", autobib_filename, 
+                          doc_file_name]
 
     result = subprocess.run(docker_command)
     
@@ -49,7 +69,10 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
         print("Error in running container")
         return False
 
-def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex_file_name: Optional[str] = None, filename: str = "default", output_formats: List[Optional[str]] = []) -> bool:
+def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, 
+                    bibtex_file_name: Optional[str] = None, 
+                    filename: str = "default", 
+                    output_formats: List[Optional[str]] = []) -> bool:
     '''Function to call Docker container to create output files from uploaded files.
 
         Parameters
