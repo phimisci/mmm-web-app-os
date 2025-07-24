@@ -105,7 +105,7 @@
 <!-- Show the XML2YAML StringFields if XML2YAML step is selected -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var radios = document.querySelectorAll('input[type="radio"]');
+        var radios = document.querySelectorAll('input[name="mmm_choices"]');
         var hiddenDiv = document.getElementById('hiddenXML2YAMLField');
 
         radios.forEach(function(radio) {
@@ -120,7 +120,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-        var radios = document.querySelectorAll('input[type="radio"]');
+        var radios = document.querySelectorAll('input[name="mmm_choices"]');
         var hiddenDiv = document.getElementById('hiddenMakerField');
 
         radios.forEach(function(radio) {
@@ -135,7 +135,7 @@
     });
 
     document.addEventListener('DOMContentLoaded', function () {
-        var radios = document.querySelectorAll('input[type="radio"]');
+        var radios = document.querySelectorAll('input[name="mmm_choices"]');
         var hiddenDiv = document.getElementById('hiddenDOC2MDField');
 
         radios.forEach(function(radio) {
@@ -151,7 +151,7 @@
 
     // Highlight files that are relevant for various MMM steps
     document.addEventListener('DOMContentLoaded', function () {
-        var radios = document.querySelectorAll('input[type="radio"]');
+        var radios = document.querySelectorAll('input[name="mmm_choices"]');
        
         radios.forEach(function(radio) {
             radio.addEventListener('change', function() {
