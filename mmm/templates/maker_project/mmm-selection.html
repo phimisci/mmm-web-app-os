@@ -77,25 +77,24 @@
             {{ form.volume_number.label(class_='form-label') }}
             {{ form.volume_number(class_='form-control') }}
         </div>
-        <div id="hiddenDOC2MDField" style="display: None;">
+
         <p style="margin-top: 3%;">Is this article part of a special issue?</p>
         {% for subfield in form.issue_info %}
         <div>
             {{ subfield }} <label for="{{ subfield.id }}">{{ subfield.label.text|safe }}</label>
         </div>
         {% endfor %}
-        </div>
 
         <!-- Hidden form based on Special Issue choice-->
-        <div class="mb-3", id="hiddenSIfield">
+        <div class="mb-3", id="hiddenSIfield", style="display: None;">
             {{ form.special_issue_title.label(class_='form-label') }}
             {{ form.special_issue_title(class_='form-control') }}
         </div>
-        <div class="mb-3", id="hiddenBSfield">
+        <div class="mb-3", id="hiddenBSfield", style="display: None;">
             {{ form.special_issue_book_authors.label(class_='form-label') }}
             {{ form.special_issue_book_authors(class_='form-control') }}
         </div>
-        <div class="mb-3", id="hiddenSIfield">
+        <div class="mb-3", id="hiddenSIfield", style="display: None;">
             {{ form.special_issue_editors.label(class_='form-label') }}
             {{ form.special_issue_editors(class_='form-control') }}
         </div>
