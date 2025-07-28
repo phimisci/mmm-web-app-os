@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import MultipleFileField, FileRequired
 from wtforms import SubmitField, StringField, BooleanField, FieldList, FormField, RadioField, HiddenField, SelectField
 from wtforms.validators import DataRequired
+import time
 
 class CreateProjectForm(FlaskForm):
     project_name = StringField('Project name', validators=[DataRequired()])
@@ -33,9 +34,12 @@ class MMMDynamicForm(FlaskForm):
     ], validators=[DataRequired()])
     # Additional information for XML2YAML:
     # volume_number: str, orcids: str, year: str, doi: str
-    volume_number = StringField('Volume number')
+    volume_number = StringField(
+        'Volume number', 
+        default=str(int(time.strftime("%Y")) - 2019)
+        )
     orcids = StringField('ORCIDs')
-    year = StringField('Year')
+    year = StringField('Year', default=time.strftime("%Y"))
     doi = StringField('DOI')
     special_issue = StringField('Special Issue Teaser')
     submit = SubmitField('Create files')
