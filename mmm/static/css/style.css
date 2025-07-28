@@ -44,6 +44,11 @@ a.active-phimisci {
     color: var(--mmm-secondary-color)!important;
 }
 
+details {
+    border: 1px solid #000;
+    padding: 0.5rem;
+}
+
 /* Navbar */
 
 .centered-container-phimisci {

@@ -74,18 +74,8 @@
             {{ form.volume_number(class_='form-control') }}
         </div>
         <div class="mb-3">
-            {{ form.orcids.label(class_='form-label') }}
-            {{ form.orcids(class_='form-control') }}
-            <div id="orcidHelp" class="form-text">Optional. Usually, the ORCIDs should be included in the OJS XML. If you need to manually add them, use the follwing syntax (separate entries using semicolons): <i>Jurczyk=0000-0002-5943-2305; Wiese=0000-0003-3338-7398).</i>.</div>
-        </div>
-        <div class="mb-3">
             {{ form.year.label(class_='form-label') }}
             {{ form.year(class_='form-control') }}
-        </div>
-        <div class="mb-3">
-            {{ form.doi.label(class_='form-label') }}
-            {{ form.doi(class_='form-control') }}
-            <div id="doiHelp" class="form-text">Optional. Pass DOI of article if not in OJS XML.</div>
         </div>
         <div class="mb-3">
           {{ form.special_issue.label(class_='form-label') }}
@@ -93,6 +83,19 @@
           <div id="siHelp" class="form-text">Optional. If this article is part
             of a special issue, you can add the SI teaser here.</div>
         </div>
+        <details>
+            <summary>Optional settings</summary>
+            <div class="mb-3">
+                {{ form.orcids.label(class_='form-label') }}
+                {{ form.orcids(class_='form-control') }}
+                <div id="orcidHelp" class="form-text">Optional. Usually, the ORCIDs should be included in the OJS XML. If you need to manually add them, use the follwing syntax (separate entries using semicolons): <i>Jurczyk=0000-0002-5943-2305; Wiese=0000-0003-3338-7398).</i>.</div>
+            </div>        
+            <div class="mb-3">
+                {{ form.doi.label(class_='form-label') }}
+                {{ form.doi(class_='form-control') }}
+                <div id="doiHelp" class="form-text">Optional. Pass DOI of article if not in OJS XML.</div>
+            </div>
+        </details>
     </div>
 
     {{ form.submit(id='submit-phimisci', onclick='startLoadingAnimation()', style='margin-top: 3%;') }}
