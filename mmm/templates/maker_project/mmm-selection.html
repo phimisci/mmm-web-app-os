@@ -70,12 +70,12 @@
     <div id="hiddenXML2YAMLField" style="display: None;">
         <p style="margin-top: 3%;">Add additional information for <b>XML2YAML</b>:</p>
         <div class="mb-3">
-            {{ form.volume_number.label(class_='form-label') }}
-            {{ form.volume_number(class_='form-control') }}
-        </div>
-        <div class="mb-3">
             {{ form.year.label(class_='form-label') }}
             {{ form.year(class_='form-control') }}
+        </div>
+        <div class="mb-3">
+            {{ form.volume_number.label(class_='form-label') }}
+            {{ form.volume_number(class_='form-control') }}
         </div>
         <div class="mb-3">
           {{ form.special_issue.label(class_='form-label') }}
