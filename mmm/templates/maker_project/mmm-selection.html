@@ -85,7 +85,9 @@
             {{ subfield }} <label for="{{ subfield.id }}">{{ subfield.label.text|safe }}</label>
         </div>
         {% endfor %}
-
+        </div>
+        
+        <div class="mb-3">
         <!-- Hidden form based on Special Issue choice-->
         <div class="mb-3" id="hiddenSIfield" style="display: None;">
             {{ form.special_issue_title.label(class_='form-label') }}
