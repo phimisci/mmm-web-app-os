@@ -41,7 +41,15 @@ class MMMDynamicForm(FlaskForm):
     orcids = StringField('ORCIDs')
     year = StringField('Year', default=time.strftime("%Y"))
     doi = StringField('DOI')
+    issue_info = RadioField('Is this a standalone article?', choices=[
+        ('standalone', 'This is a standalone article'),
+        ('symposium', 'This article is part of a book symposium'),
+        ('specialissue', 'This article is part of a special issue')
+    ], default='standalone', validators=[DataRequired()])
     special_issue = StringField('Special Issue Teaser')
+    special_issue_title = StringField('Special Issue/Book Symposium Title')
+    special_issue_book_authors = StringField('Authors of discussed book')
+    special_issue_editors = StringField('Editors of Special Issue/Book Symposium')
     submit = SubmitField('Create files')
     # Additional information for DOC2MD:
     zotero_used = BooleanField('Zotero used')
