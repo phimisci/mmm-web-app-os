@@ -47,7 +47,7 @@ class MMMDynamicForm(FlaskForm):
         ('specialissue', 'This article is part of a special issue')
     ], default='standalone', validators=[DataRequired()])
     special_issue = StringField('Special Issue Teaser')
-    special_issue_title = StringField('Special Issue/Book Symposium Title')
+    special_issue_title = StringField('Title of Special Issue/Title of discussed book')
     special_issue_book_authors = StringField('Authors of discussed book')
     special_issue_editors = StringField('Editors of Special Issue/Book Symposium')
     submit = SubmitField('Create files')

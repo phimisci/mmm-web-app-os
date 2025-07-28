@@ -78,7 +78,7 @@
             {{ form.volume_number(class_='form-control') }}
         </div>
 
-        <div>
+        <div class="mb-3">
         <p style="margin-top: 3%;">Is this article part of a special issue?</p>
         {% for subfield in form.issue_info %}
         <div>
@@ -87,18 +87,19 @@
         {% endfor %}
 
         <!-- Hidden form based on Special Issue choice-->
-        <div class="mb-3", id="hiddenSIfield", style="display: None;">
+        <div class="mb-3" id="hiddenSIfield" style="display: None;">
             {{ form.special_issue_title.label(class_='form-label') }}
             {{ form.special_issue_title(class_='form-control') }}
             {{ form.special_issue_editors.label(class_='form-label') }}
             {{ form.special_issue_editors(class_='form-control') }}
         </div>
-        <div class="mb-3", id="hiddenBSfield", style="display: None;">
+        <div class="mb-3" id="hiddenBSfield" style="display: None;">
             {{ form.special_issue_book_authors.label(class_='form-label') }}
             {{ form.special_issue_book_authors(class_='form-control') }}
         </div>
         </div>
 
+        <div class="mb-3"></div>
         <details>
             <summary>Optional settings</summary>
             <div class="mb-3">
@@ -112,6 +113,7 @@
                 <div id="doiHelp" class="form-text">Pass DOI of article if not in OJS XML.</div>
             </div>
         </details>
+        </div>
     </div>
 
     {{ form.submit(id='submit-phimisci', onclick='startLoadingAnimation()', style='margin-top: 3%;') }}
@@ -148,10 +150,18 @@
                 if (radio.checked && radio.value === 'symposium') {
                     hiddenDivBS.style.display = 'block';
                     hiddenDivSI.style.display = 'block';
+                    var titleLabel = document.querySelector('label[for=special_issue_title]');
+                    titleLabel.textContent = 'Title of discussed book';
+                    var EditorsLabel = document.querySelector('label[for=special_issue_editors]');
+                    EditorsLabel.textContent = 'Editors of book symposium';
                 } else {
                     if (radio.checked && radio.value === 'specialissue') {
                     hiddenDivBS.style.display = 'none';
                     hiddenDivSI.style.display = 'block';
+                    var titleLabel = document.querySelector('label[for=special_issue_title]');
+                    titleLabel.textContent = 'Title of special issue';
+                    var EditorsLabel = document.querySelector('label[for=special_issue_editors]');
+                    EditorsLabel.textContent = 'Editors of special issue';
                     } else {
                         hiddenDivBS.style.display = 'none';
                         hiddenDivSI.style.display = 'none';
