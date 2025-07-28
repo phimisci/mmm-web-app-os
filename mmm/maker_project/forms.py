@@ -47,9 +47,17 @@ class MMMDynamicForm(FlaskForm):
         ('specialissue', 'This article is part of a special issue')
     ], default='standalone', validators=[DataRequired()])
     special_issue = StringField('Special Issue Teaser')
-    special_issue_title = StringField('Title of Special Issue/Title of discussed book')
-    special_issue_book_authors = StringField('Authors of discussed book')
-    special_issue_editors = StringField('Editors of Special Issue/Book Symposium')
+    special_issue_title = StringField(
+        'Title of Special Issue/Title of discussed book'
+        )
+    special_issue_book_authors = StringField(
+        'Author(s) of discussed book (separated by ;)', 
+        default='Author 1; Author 2'
+        )
+    special_issue_editors = StringField(
+        'Editors of Special Issue/Book Symposium',
+        default='Editor 1; Editor 2'
+        )
     submit = SubmitField('Create files')
     # Additional information for DOC2MD:
     zotero_used = BooleanField('Zotero used')
