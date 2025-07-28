@@ -441,10 +441,10 @@ def get_xml2yaml_data(form: MMMDynamicForm) -> dict:
     data["orcids"] = " ".join([orcid.strip() for orcid in form.orcids.data.split(";")]) if form.orcids.data != "" else None
     data["year"] = form.year.data
     data["doi"] = form.doi.data if form.doi.data != "" else None
-    data["issue_info"] = form.issue_info
-    data["special_issue_title"] = form.special_issue_title if form.special_issue_title != "" else None
-    data["special_issue_book_authors"] = form.special_issue_book_authors if form.special_issue_book_authors != "" else None
-    data["special_issue_editors"] = form.special_issue_editors if form.special_issue_editors != "" else None
+    data["issue_info"] = form.issue_info.data
+    data["special_issue_title"] = form.special_issue_title.data if form.special_issue_title.data != "" else None
+    data["special_issue_book_authors"] = form.special_issue_book_authors.data if form.special_issue_book_authors.data != "" else None
+    data["special_issue_editors"] = form.special_issue_editors.data if form.special_issue_editors.data != "" else None
     data["special_issue"] = form.special_issue.data if form.special_issue.data != "" else None
     return data
 
