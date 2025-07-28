@@ -138,10 +138,17 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str,
         print("Error in running container")
         return False
 
-def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number:
-                          Optional[str],
-                          orcids: Optional[str], year: Optional[str], doi:
-                          Optional[str], special_issue: Optional[str]) -> bool:
+def create_files_xml2yaml(dir_path: str, 
+                          xml_file_name: str, 
+                          volume_number: Optional[str],
+                          orcids: Optional[str], 
+                          year: Optional[str], 
+                          doi: Optional[str], 
+                          issue_info: Optional[str],
+                          special_issue_editors: Optional[str],
+                          special_issue_book_authors: Optional[str],
+                          special_issue_title: Optional[str]
+                          ) -> bool:
     '''Function to call Docker container to create metadata.yaml file from uploaded OJS-XML.
 
         Parameters
@@ -167,7 +174,10 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number:
 
     # Docker command for XML2YAML-OS
     # See https://github.com/phimisci/xml2yaml-os
-    docker_command = ["docker", "run","--rm", "--volume", f"{ABS_FILE_PATH}:/app/xml_input/{xml_file_name}" ,"--volume", f"{HOST_UPLOAD_DIR}:/app/yaml_output", current_app.config.get('XML2YAML_IMAGE'), xml_file_name]
+    docker_command = ["docker", "run","--rm", "--volume", 
+                      f"{ABS_FILE_PATH}:/app/xml_input/{xml_file_name}" ,
+                      "--volume", f"{HOST_UPLOAD_DIR}:/app/yaml_output", 
+                      current_app.config.get('XML2YAML_IMAGE'), xml_file_name]
 
     ## Adding additional optional arguments
     ## These arguments are depend on the configuration of XML2YAML-OS
@@ -184,8 +194,17 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number:
     if doi != None:
         docker_command.extend(["--doi", f'{doi}'])
     ### SPECIAL ISSUE
-    if special_issue != None:
-        docker_command.extend(["--specialissue", special_issue])
+    if issue_info != "standalone":
+        docker_command.extend(["--issue_type", issue_info])
+
+    if special_issue_editors != None:
+        docker_command.extend(["--issue_editors", special_issue_editors])
+
+    if special_issue_book_authors != None:
+        docker_command.extend(["--issue_book_authors", special_issue_book_authors])
+
+    if special_issue_title != None:
+        docker_command.extend(["--special_issue", special_issue_title])
 
     # running docker container
     result = subprocess.run(docker_command)

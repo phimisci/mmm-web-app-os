@@ -140,7 +140,11 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str,
                                     xml2yaml_data["volume_number"],
                                     xml2yaml_data["orcids"],
                                     xml2yaml_data["year"], xml2yaml_data["doi"],
-                                    xml2yaml_data["special_issue"])
+                                    xml2yaml_data["issue_info"],
+                                    xml2yaml_data["special_issue_editors"],
+                                    xml2yaml_data["special_issue_book_authors"],
+                                    xml2yaml_data["special_issue_title"]
+                                    )
         if res:
             # Currently produced files by XML2YAML: yaml-metadata.yaml
             if os.path.exists(f"{os.getcwd()}/{dir_path}/metadata.yaml"):
