@@ -86,7 +86,7 @@
         </div>
         {% endfor %}
         </div>
-        
+
         <div class="mb-3">
         <!-- Hidden form based on Special Issue choice-->
         <div class="mb-3" id="hiddenSIfield" style="display: None;">
@@ -146,6 +146,7 @@
         var radios = document.querySelectorAll('input[name="issue_info"]');
         var hiddenDivBS = document.getElementById('hiddenBSfield');
         var hiddenDivSI = document.getElementById('hiddenSIfield');
+        var hiddenSIBSTitle = document.getElementById('special_issue_title');
 
         radios.forEach(function(radio) {
             radio.addEventListener('change', function() {
@@ -155,7 +156,8 @@
                     var titleLabel = document.querySelector('label[for=special_issue_title]');
                     titleLabel.textContent = 'Title of discussed book';
                     var EditorsLabel = document.querySelector('label[for=special_issue_editors]');
-                    EditorsLabel.textContent = 'Editor(s) of book symposium (separated by ;). Can be left empty.';
+                    EditorsLabel.textContent = 'Editor(s) of book symposium, separated by ; (can be left empty)';
+                    hiddenSIBSTitle.setAttribute('required', '')
                 } else {
                     if (radio.checked && radio.value === 'specialissue') {
                     hiddenDivBS.style.display = 'none';
@@ -163,10 +165,12 @@
                     var titleLabel = document.querySelector('label[for=special_issue_title]');
                     titleLabel.textContent = 'Title of special issue';
                     var EditorsLabel = document.querySelector('label[for=special_issue_editors]');
-                    EditorsLabel.textContent = 'Editor(s) of special issue (separated by ;)';
+                    EditorsLabel.textContent = 'Editor(s) of special issue, separated by ;';
+                    hiddenSIBSTitle.setAttribute('required', '')
                     } else {
                         hiddenDivBS.style.display = 'none';
                         hiddenDivSI.style.display = 'none';
+                        hiddenSIBSTitle.removeAttribute('required')
                     }
             }
             });
