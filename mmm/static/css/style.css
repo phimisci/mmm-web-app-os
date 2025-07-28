@@ -45,8 +45,13 @@ a.active-phimisci {
 }
 
 details {
-    border: 1px solid #000;
+    border: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.5rem;
+}
+
+details[open] summary {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
 }
 
 /* Navbar */
