@@ -78,6 +78,7 @@
             {{ form.volume_number(class_='form-control') }}
         </div>
 
+        <div>
         <p style="margin-top: 3%;">Is this article part of a special issue?</p>
         {% for subfield in form.issue_info %}
         <div>
@@ -89,14 +90,13 @@
         <div class="mb-3", id="hiddenSIfield", style="display: None;">
             {{ form.special_issue_title.label(class_='form-label') }}
             {{ form.special_issue_title(class_='form-control') }}
+            {{ form.special_issue_editors.label(class_='form-label') }}
+            {{ form.special_issue_editors(class_='form-control') }}
         </div>
         <div class="mb-3", id="hiddenBSfield", style="display: None;">
             {{ form.special_issue_book_authors.label(class_='form-label') }}
             {{ form.special_issue_book_authors(class_='form-control') }}
         </div>
-        <div class="mb-3", id="hiddenSIfield", style="display: None;">
-            {{ form.special_issue_editors.label(class_='form-label') }}
-            {{ form.special_issue_editors(class_='form-control') }}
         </div>
 
         <details>
@@ -140,30 +140,23 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         var radios = document.querySelectorAll('input[name="issue_info"]');
-        var hiddenDiv = document.getElementById('hiddenSIfield');
-
-        radios.forEach(function(radio) {
-            radio.addEventListener('change', function() {
-                if (radio.checked && radio.value === 'specialissue') {
-                    hiddenDiv.style.display = 'block';
-                } else {
-                    hiddenDiv.style.display = 'none';
-                }
-            });
-        });
-    });
-
-    document.addEventListener('DOMContentLoaded', function () {
-        var radios = document.querySelectorAll('input[name="issue_info"]');
-        var hiddenDiv = document.getElementById('hiddenBSfield');
+        var hiddenDivBS = document.getElementById('hiddenBSfield');
+        var hiddenDivSI = document.getElementById('hiddenSIfield');
 
         radios.forEach(function(radio) {
             radio.addEventListener('change', function() {
                 if (radio.checked && radio.value === 'symposium') {
-                    hiddenDiv.style.display = 'block';
+                    hiddenDivBS.style.display = 'block';
+                    hiddenDivSI.style.display = 'block';
                 } else {
-                    hiddenDiv.style.display = 'none';
-                }
+                    if (radio.checked && radio.value === 'specialissue') {
+                    hiddenDivBS.style.display = 'none';
+                    hiddenDivSI.style.display = 'block';
+                    } else {
+                        hiddenDivBS.style.display = 'none';
+                        hiddenDivSI.style.display = 'none';
+                    }
+            }
             });
         });
     });     
