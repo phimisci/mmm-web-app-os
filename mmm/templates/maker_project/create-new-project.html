@@ -7,7 +7,7 @@
 {% if form.project_name.errors %}
     {% for error in form.project_name.errors %}
 	<div class="message-box-phimisci msg-type-danger">
-        <li>{{ error }}</li>
+        {{ error }}
 	</div>
     {% endfor %}
 {% endif %}
