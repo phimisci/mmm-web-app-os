@@ -86,7 +86,15 @@ class MMMDynamicForm(FlaskForm):
     
 class RenameObject(FlaskForm):
     '''This form is used to rename a file or folder.'''
-    new_name = StringField('New name', validators=[DataRequired()])
+    new_name = StringField(
+        'New name', 
+        validators=[DataRequired(),
+                    Regexp(
+                        regex="^[A-Za-z0-9_-]+$", 
+                        message="Invalid name. Only characters (A-Z), numbers," \
+                        " underscores and hyphens are allowed."
+                        )]
+        )
     submit = SubmitField('Rename')
 
 class ShareProjectWithUser(FlaskForm):
