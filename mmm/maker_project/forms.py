@@ -5,11 +5,20 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import MultipleFileField, FileRequired
 from wtforms import SubmitField, StringField, BooleanField, FieldList, FormField, RadioField, HiddenField, SelectField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Regexp
 import time
 
 class CreateProjectForm(FlaskForm):
-    project_name = StringField('Project name', validators=[DataRequired()])
+    project_name = StringField(
+        "Project name", 
+        validators=[DataRequired(),
+                    Regexp(
+                        regex="^[A-Za-z0-9_-]+$", 
+                        message="Invalid name. Only characters (A-Z), numbers," \
+                        " underscores and hyphens are allowed."
+                        )
+                    ]
+        )
     submit = SubmitField('Create project')
 
 class MMMChoiceForm(FlaskForm):
