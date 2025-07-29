@@ -4,6 +4,15 @@
 
 <h2>Create new project</h2>
 
+{% if form.project_name.errors %}
+    <ul class="errors">
+    {% for error in form.project_name.errors %}
+        <li>{{ error }}</li>
+    {% endfor %}
+    </ul>
+{% endif %}
+
+
 <form method="POST" action="{{ url_for('maker_project.create_new_project') }}">
 	{{ form.hidden_tag() }}
 	<div>
