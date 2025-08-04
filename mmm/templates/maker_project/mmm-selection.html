@@ -63,7 +63,7 @@
           {{ form.proof_output.label(class_='form-check-label') }}
         </div>
         <p style="margin-top: 3%;">Optional settings for <b>Maker</b> processing:</p>
-        <div class="mb-3">
+        <div class="mb-3" id="widowControlSelector">
             {{ form.widow_treatment(class_='form-check-input') }}
             {{ form.widow_treatment.label(class_='form-check-label') }}
         </div>
@@ -152,6 +152,19 @@
 
 <!-- Show the XML2YAML StringFields if XML2YAML step is selected -->
 <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var layoutSelector = document.querySelectorAll('input[name="layout_version"]');
+        var widowElement = document.getElementById('widowControlSelector');
+        
+        layoutSelector.addEventListener("change", function() {
+            if(layoutSelector.value == "classic") {
+                widowElement.setAttribute('disabled', '')
+            } else {
+                widowElement.removeAttribute('disabled', '')
+            }
+        });
+    });
+
     document.addEventListener('DOMContentLoaded', function () {
         var radios = document.querySelectorAll('input[name="mmm_choices"]');
         var hiddenDiv = document.getElementById('hiddenXML2YAMLField');
