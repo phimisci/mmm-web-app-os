@@ -81,13 +81,13 @@ class MMMDynamicForm(FlaskForm):
     layout_version = SelectField('Select the layout version', 
                                  choices=[
                                      ('classic', 'Classic (2019-2025)'),
-                                     ('twocolumn', 'Twocolumn (2025-)')
+                                     ('twocolumn', 'Two Columns (2025-)')
                                  ],
                                  validators=[DataRequired()]
                                  )
     compound_filter = BooleanField('Use a filter to process compound words')
-    manual_parentheses = BooleanField('The citation were auto-encoded in ' \
-                                      'the DOC2MD step.')
+    manual_parentheses = BooleanField('The citations were auto-encoded in ' \
+                                      'the DOC2MD step')
     pdf_output = BooleanField('PDF')
     html_output = BooleanField('HTML')
     jats_output = BooleanField('JATS XML')
