@@ -63,8 +63,8 @@
           {{ form.proof_output.label(class_='form-check-label') }}
         </div>
         <p style="margin-top: 3%;">Optional settings for <b>Maker</b> processing:</p>
-        <div class="mb-3" id="widowControlSelector">
-            {{ form.widow_treatment(class_='form-check-input') }}
+        <div class="mb-3">
+            {{ form.widow_treatment(class_='form-check-input', disabled=True) }}
             {{ form.widow_treatment.label(class_='form-check-label') }}
         </div>
         <div class="mb-3">
@@ -153,8 +153,8 @@
 <!-- Show the XML2YAML StringFields if XML2YAML step is selected -->
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var layoutSelector = document.querySelectorAll('input[name="layout_version"]');
-        var widowElement = document.getElementById('widowControlSelector');
+        var layoutSelector = document.getElementById('layout_version');
+        var widowElement = document.getElementById('widow_treatment');
         
         layoutSelector.addEventListener("change", function() {
             if(layoutSelector.value == "classic") {
