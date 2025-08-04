@@ -159,6 +159,7 @@
         layoutSelector.addEventListener("change", function() {
             if(layoutSelector.value == "classic") {
                 widowElement.setAttribute('disabled', '')
+                widowElement.checked = false;
             } else {
                 widowElement.removeAttribute('disabled', '')
             }
