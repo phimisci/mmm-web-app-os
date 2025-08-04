@@ -37,7 +37,7 @@
 
     <!-- Hidden forms for MAKER step -->
     <div id="hiddenMakerField" style="display: None;">
-        <div class="mb-3">
+        <div class="my-sm-2">
             {{ form.layout_version.label(class_='form-label') }}
             {{ form.layout_version(class_='form-control') }}
         </div>
@@ -64,12 +64,22 @@
         </div>
         <p style="margin-top: 3%;">Optional settings for <b>Maker</b> processing:</p>
         <div class="mb-3">
-            {{ form.compound_filter.label(class_='form-label') }}
-            {{ form.compound_filter(class_='form-control') }}
+            {{ form.compound_filter(class_='form-check-input') }}
+            {{ form.compound_filter.label(class_='form-check-label') }}
+            <div id="orcidHelp" class="form-text">
+                This filter improves hyphenation and paragraph composition in 
+                the PDF output by optimising hyphenation in compound words.
+            </div>
         </div>
         <div class="mb-3">
-            {{ form.manual_parentheses.label(class_='form-label') }}
-            {{ form.manual_parentheses(class_='form-control') }}
+            {{ form.manual_parentheses(class_='form-check-input') }}
+            {{ form.manual_parentheses.label(class_='form-check-label') }}
+            <div id="orcidHelp" class="form-text">
+                This controls how parentheses are used in citations in the PDF
+                output. Verify your setting by checking whether parentheses are 
+                placed correctly in the output, and try a different setting if 
+                not.
+            </div>
         </div>
         <div class="mb-3">
             {{ form.custom_file_name.label(class_='form-label') }}
