@@ -28,4 +28,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8500
 
 # Run gunicorn when the container launches
-CMD python3 app_setup.py && gunicorn -b :8500 -w 4 wsgi:app -t 0
+CMD python3 app_setup.py && gunicorn -b :8500 -w 4 wsgi:app -t 900
