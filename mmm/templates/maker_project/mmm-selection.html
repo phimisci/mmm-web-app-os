@@ -37,10 +37,9 @@
 
     <!-- Hidden forms for MAKER step -->
     <div id="hiddenMakerField" style="display: None;">
-        <p style="margin-top: 3%;">Add optional file name for <b>Maker</b> output files:</p>
         <div class="mb-3">
-            {{ form.custom_file_name.label(class_='form-label') }}
-            {{ form.custom_file_name(class_='form-control') }}
+            {{ form.layout_version.label(class_='form-label') }}
+            {{ form.layout_version(class_='form-control') }}
         </div>
         <p style="margin-top: 3%;">Select output files created during the <b>Maker</b> step:</p>
         <div>
@@ -63,7 +62,19 @@
           {{ form.proof_output(class_='form-check-input') }}
           {{ form.proof_output.label(class_='form-check-label') }}
         </div>
-
+        <p style="margin-top: 3%;">Optional settings for <b>Maker</b> processing:</p>
+        <div class="mb-3">
+            {{ form.compound_filter.label(class_='form-label') }}
+            {{ form.compound_filter(class_='form-control') }}
+        </div>
+        <div class="mb-3">
+            {{ form.manual_parentheses.label(class_='form-label') }}
+            {{ form.manual_parentheses(class_='form-control') }}
+        </div>
+        <div class="mb-3">
+            {{ form.custom_file_name.label(class_='form-label') }}
+            {{ form.custom_file_name(class_='form-control') }}
+        </div>
     </div>
 
     <!-- Hidden forms for XML2YAML step -->
