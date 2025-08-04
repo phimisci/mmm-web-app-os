@@ -85,6 +85,7 @@ class MMMDynamicForm(FlaskForm):
                                  ],
                                  validators=[DataRequired()]
                                  )
+    widow_treatment = BooleanField('Automatically correct widows in PDF output')
     compound_filter = BooleanField('Use a filter to process compound words')
     manual_parentheses = BooleanField('The citations were auto-encoded in ' \
                                       'the DOC2MD step')

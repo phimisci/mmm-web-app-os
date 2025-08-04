@@ -64,6 +64,10 @@
         </div>
         <p style="margin-top: 3%;">Optional settings for <b>Maker</b> processing:</p>
         <div class="mb-3">
+            {{ form.widow_treatment.label(class_='form-label') }}
+            {{ form.widow_treatment(class_='form-control') }}
+        </div>
+        <div class="mb-3">
             {{ form.compound_filter(class_='form-check-input') }}
             {{ form.compound_filter.label(class_='form-check-label') }}
             <div id="orcidHelp" class="form-text">
