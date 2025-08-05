@@ -33,7 +33,19 @@ def allowed_file(filename: str) -> bool:
     '''
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, project_id: int, xml2yaml_data: dict, zotero_used: bool, file_name: str, output_formats: List[Optional[str]] = []) -> str:
+def create_files(dir_path: str, 
+                 selected_files: List[str], 
+                 mmm_choice: str, 
+                 project_id: int, 
+                 xml2yaml_data: dict, 
+                 bibliography_management: str, 
+                 file_name: str, 
+                 output_formats: List[Optional[str]] = [],
+                 layout_version: str = "twocolumn",
+                 widow_treatment: bool = False,
+                 compound_filter: bool = False,
+                 manual_parentheses: bool = False
+                 ) -> str:
     '''Function to create files based on MMM-Project selections.
 
         Arguments
@@ -53,11 +65,27 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
         xml2yaml_data : dict
             Dictionary containing the data for XML2YAML (if this step was selected, else dict is empty).
 
-        zotero_used : bool
-            Boolean to indicate if Zotero was used (for DOC2MD step).
+        bibliography_management : str
+            Choice of bibliography management option (for DOC2MD step).
 
         file_name : Optional[str]
             Name of the file(s) to be created (for DW/Maker step).
+
+        layout_version: str
+            Which layout version is in use. Options are 'classic' and 
+            'twowolumn' (for DW/Maker step).
+        
+        widow_treament: bool
+            Whether to enable automatic treament of widows in PDF output
+            (for DW/Maker step).
+
+        compound_filter: bool
+            Whether to apply a filter that makes compound words breakable
+            in PDF output (for DW/Maker step).
+
+        manual_parentheses: bool
+            Whether the citations where automatically encoded in the 
+            DOC2MD step (for DW/Maker step).
         
         Returns
         -------
@@ -69,28 +97,51 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
         return "Please select a file to proceed."
     # If file was selected, continue with Maker step selection
     if mmm_choice == "doc2md":
-        doc = selected_files[0]
-        # Check if file is doc(x) or odt
-        if not doc.split(".")[-1].lower() in ["doc", "docx", "odt"]:
-            return "Please pass a doc(x) or odt file to DOC2MD!"
+        if bibliography_management != "auto":
+            doc = selected_files[0]
+            autobib_file = ""
+            # Check if file is doc(x) or odt
+            if not doc.split(".")[-1].lower() in ["doc", "docx", "odt"]:
+                return "Please pass a doc(x) or odt file to DOC2MD!"
         else:
-            res = create_files_doc2md(dir_path, doc, zotero_used)
-            if res:
-                # Register files in DB
-                # Currently produced files by DOC2MD: raw_markdown.md, clean_markdown.md, doc2md.log
-                if os.path.exists(f"{os.getcwd()}/{dir_path}/raw_markdown.md"):
-                    register_file_in_db("raw_markdown.md", project_id, True)
-                if os.path.exists(f"{os.getcwd()}/{dir_path}/clean_markdown.md"):
-                    register_file_in_db("clean_markdown.md", project_id, True)
-                if os.path.exists(f"{os.getcwd()}/{dir_path}/doc2md.log"):
-                    register_file_in_db("doc2md.log", project_id, True)
-                if zotero_used:
-                    # Check if bibliography.bib exists
-                    if os.path.exists(f"{os.getcwd()}/{dir_path}/bibliography.bib"):
-                        register_file_in_db("bibliography.bib", project_id, True)
-                return "true"
-            else:
-                return "Error creating files using DOC2MD." 
+            doc = False
+            autobib_file = False
+            for f in selected_files:
+                if f.split(".")[-1].lower() in ["doc", "docx", "odt"]:
+                    doc = f
+                if f.split(".")[-1].lower() == "bib":
+                    autobib_file = f
+            if not (doc and autobib_file):
+                return """
+                       Please pass both a doc(x)/odt file and a bibliography
+                       to DOC2MD!
+                       """  
+        
+        res = create_files_doc2md(
+            dir_path, doc, bibliography_management, autobib_file
+            )
+        if res:
+            # Register files in DB
+            # Currently produced files by DOC2MD: 
+            # raw_markdown.md, clean_markdown.md, doc2md.log
+            if os.path.exists(f"{os.getcwd()}/{dir_path}/raw_markdown.md"):
+                register_file_in_db("raw_markdown.md", project_id, True)
+            if os.path.exists(f"{os.getcwd()}/{dir_path}/clean_markdown.md"):
+                register_file_in_db("clean_markdown.md", project_id, True)
+            if os.path.exists(f"{os.getcwd()}/{dir_path}/doc2md.log"):
+                register_file_in_db("doc2md.log", project_id, True)
+            if bibliography_management == "zotero":
+                # Check if bibliography.bib exists
+                if os.path.exists(f"{os.getcwd()}/{dir_path}/bibliography.bib"):
+                    register_file_in_db("bibliography.bib", project_id, True)
+            if bibliography_management == "auto":
+                # Register file containing candidates for remaining citations,
+                # generated by the autobib filter.
+                if os.path.exists(f"{os.getcwd()}/{dir_path}/citation_candidates.txt"):
+                    register_file_in_db("citation_candidates.txt", project_id, True)
+            return "true"
+        else:
+            return "Error creating files using DOC2MD." 
     elif mmm_choice == "verifybibtex":
         bib = selected_files[0]
         # Check if file is bib or bibtex
@@ -115,7 +166,11 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
                                     xml2yaml_data["volume_number"],
                                     xml2yaml_data["orcids"],
                                     xml2yaml_data["year"], xml2yaml_data["doi"],
-                                    xml2yaml_data["special_issue"])
+                                    xml2yaml_data["issue_info"],
+                                    xml2yaml_data["special_issue_editors"],
+                                    xml2yaml_data["special_issue_book_authors"],
+                                    xml2yaml_data["special_issue_title"]
+                                    )
         if res:
             # Currently produced files by XML2YAML: yaml-metadata.yaml
             if os.path.exists(f"{os.getcwd()}/{dir_path}/metadata.yaml"):
@@ -146,7 +201,25 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, proj
         if file_name == "":
             file_name = os.path.splitext(md_file)[0]
         # Proceed with creating files
-        res = create_files_dw(dir_path, md_file, yaml_file, bibtex_file_name=bib_file, filename=file_name, output_formats=output_formats) if bib_file != None else create_files_dw(dir_path, md_file, yaml_file, filename=file_name, output_formats=output_formats)
+        if bib_file != None:
+            res = create_files_dw(dir_path, md_file, yaml_file, 
+                    bibtex_file_name=bib_file, 
+                    filename=file_name, 
+                    output_formats=output_formats,
+                    layout_version=layout_version,
+                    widow_treatment=widow_treatment,
+                    compound_filter=compound_filter,
+                    manual_parentheses=manual_parentheses
+                    )  
+        else:
+            res = create_files_dw(dir_path, md_file, yaml_file, 
+                    filename=file_name, 
+                    output_formats=output_formats,
+                    layout_version=layout_version,
+                    widow_treatment=widow_treatment,
+                    compound_filter=compound_filter,
+                    manual_parentheses=manual_parentheses
+                    )
         # Rename files back to original names if necessary
         if res:
             # Get file name from Markdown file if no file name was passed
@@ -412,6 +485,10 @@ def get_xml2yaml_data(form: MMMDynamicForm) -> dict:
     data["orcids"] = " ".join([orcid.strip() for orcid in form.orcids.data.split(";")]) if form.orcids.data != "" else None
     data["year"] = form.year.data
     data["doi"] = form.doi.data if form.doi.data != "" else None
+    data["issue_info"] = form.issue_info.data
+    data["special_issue_title"] = form.special_issue_title.data if form.special_issue_title.data != "" else None
+    data["special_issue_book_authors"] = form.special_issue_book_authors.data if form.special_issue_book_authors.data != "" else None
+    data["special_issue_editors"] = form.special_issue_editors.data if form.special_issue_editors.data != "" else None
     data["special_issue"] = form.special_issue.data if form.special_issue.data != "" else None
     return data
 

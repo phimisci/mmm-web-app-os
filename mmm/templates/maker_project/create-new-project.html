@@ -4,10 +4,22 @@
 
 <h2>Create new project</h2>
 
+{% if form.project_name.errors %}
+    {% for error in form.project_name.errors %}
+	<div class="message-box-phimisci msg-type-danger">
+        {{ error }}
+	</div>
+    {% endfor %}
+{% endif %}
+
+
 <form method="POST" action="{{ url_for('maker_project.create_new_project') }}">
 	{{ form.hidden_tag() }}
 	<div>
-		{{ form.project_name.label(class_='form-label') }} {{ form.project_name(class_='form-control') }}
+		{{ form.project_name.label(class_='form-label') }} 
+		{{ form.project_name(class_='form-control') }}
+		<div id="project_nameHelp" class="form-text">A project name may only 
+			contain Latin base characters (A-z), numbers, hyphens, and underscores.</div>
 	</div>
 	{{ form.submit(id='submit-phimisci', style='margin-top: 3%;') }}
 </form>

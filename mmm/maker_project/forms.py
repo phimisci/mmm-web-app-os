@@ -5,10 +5,20 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import MultipleFileField, FileRequired
 from wtforms import SubmitField, StringField, BooleanField, FieldList, FormField, RadioField, HiddenField, SelectField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Regexp
+import time
 
 class CreateProjectForm(FlaskForm):
-    project_name = StringField('Project name', validators=[DataRequired()])
+    project_name = StringField(
+        "Project name", 
+        validators=[DataRequired(),
+                    Regexp(
+                        regex="^[A-Za-z0-9_-]+$", 
+                        message="Invalid name. Only characters (A-Z), numbers," \
+                        " underscores and hyphens are allowed."
+                        )
+                    ]
+        )
     submit = SubmitField('Create project')
 
 class MMMChoiceForm(FlaskForm):
@@ -33,17 +43,52 @@ class MMMDynamicForm(FlaskForm):
     ], validators=[DataRequired()])
     # Additional information for XML2YAML:
     # volume_number: str, orcids: str, year: str, doi: str
-    volume_number = StringField('Volume number')
+    volume_number = StringField(
+        'Volume number', 
+        default=str(int(time.strftime("%Y")) - 2019)
+        )
     orcids = StringField('ORCIDs')
-    year = StringField('Year')
+    year = StringField('Year', default=time.strftime("%Y"))
     doi = StringField('DOI')
+    issue_info = RadioField('Is this a standalone article?', choices=[
+        ('standalone', 'This is a standalone article'),
+        ('symposium', 'This article is part of a book symposium'),
+        ('specialissue', 'This article is part of a special issue')
+    ], default='standalone', validators=[DataRequired()])
     special_issue = StringField('Special Issue Teaser')
+    special_issue_title = StringField(
+        'Title of Special Issue/Title of discussed book'
+        )
+    special_issue_book_authors = StringField(
+        'Author(s) of discussed book (separated by ;)', 
+        default='Author 1; Author 2'
+        )
+    special_issue_editors = StringField(
+        'Editors of Special Issue/Book Symposium',
+        default='Editor 1; Editor 2'
+        )
     submit = SubmitField('Create files')
     # Additional information for DOC2MD:
     zotero_used = BooleanField('Zotero used')
+    bibliography_choices = RadioField('Select bibliography processing', choices=[
+        ('none', 'No external processing'),
+        ('zotero', 'Zotero was used inside Word'),
+        ('auto', 'Auto-encode citations based on bibliography file')
+    ], default='none', validators=[DataRequired()])
     # Additional possibility to create a custom file name for output files in Maker/DW step
     custom_file_name = StringField('Custom file name (optional)')
     # Select output format for MAKER step
+    layout_version = SelectField('Select the layout version', 
+                                 choices=[
+                                     ('classic', 'Classic (2019-2025)'),
+                                     ('twocolumn', 'Two Columns (2025-)')
+                                 ],
+                                 validators=[DataRequired()]
+                                 )
+    widow_treatment = BooleanField('Automatically correct widows in PDF output')
+    compound_filter = BooleanField('Use a filter to process compound words')
+    manual_parentheses = BooleanField('The citations were auto-encoded in ' \
+                                      'the DOC2MD step')
     pdf_output = BooleanField('PDF')
     html_output = BooleanField('HTML')
     jats_output = BooleanField('JATS XML')
@@ -52,7 +97,15 @@ class MMMDynamicForm(FlaskForm):
     
 class RenameObject(FlaskForm):
     '''This form is used to rename a file or folder.'''
-    new_name = StringField('New name', validators=[DataRequired()])
+    new_name = StringField(
+        'New name', 
+        validators=[DataRequired(),
+                    Regexp(
+                        regex="^[A-Za-z0-9_-]+$", 
+                        message="Invalid name. Only characters (A-Z), numbers," \
+                        " underscores and hyphens are allowed."
+                        )]
+        )
     submit = SubmitField('Rename')
 
 class ShareProjectWithUser(FlaskForm):

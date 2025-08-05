@@ -9,7 +9,9 @@ from flask import current_app
 from flask_login import current_user
 from flask import current_app
 
-def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) -> bool:
+def create_files_doc2md(dir_path: str, doc_file_name: str, 
+                        bibliography_management: str,
+                        autobib_filename: str) -> bool:
     '''Function to call Docker container to create MD files from uploaded document file.
 
         Parameters
@@ -17,9 +19,14 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
             dir_path: str
                 The path to the directory where the uploaded files are stored.
             doc_file_name: str
-                The name of the document file (needs to be in dir_path; doc|docx|odt).
-            zotero_used: bool
-                Indicate whether Zotero was used to create the document file.
+                The name of the document file (needs to be in dir_path; 
+                doc|docx|odt).
+            bibliography_management: str
+                Indicate the choice of bibliography management 
+                (none|zotero|auto).
+            autobib_filename: str
+                File name of the bibliography database for automatic 
+                bibliography processing.
         Returns
         -------
             bool: True if the file has successfully been created, else False.
@@ -32,10 +39,23 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
 
     # Run docker container
-    if not zotero_used:
-        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", current_app.config.get('DOC2MD_IMAGE'), doc_file_name]
-    else:
-        docker_command = ["docker", "run","--rm", "--volume", f"{HOST_UPLOAD_DIR}:/app/files", current_app.config.get('DOC2MD_IMAGE'), "--zotero", doc_file_name]
+    if bibliography_management == "none":
+        docker_command = ["docker", "run","--rm", "--volume", 
+                          f"{HOST_UPLOAD_DIR}:/app/files", 
+                          current_app.config.get('DOC2MD_IMAGE'), doc_file_name]
+        
+    if bibliography_management == "zotero":
+        docker_command = ["docker", "run","--rm", "--volume", 
+                          f"{HOST_UPLOAD_DIR}:/app/files", 
+                          current_app.config.get('DOC2MD_IMAGE'), "--zotero", 
+                          doc_file_name]
+        
+    if bibliography_management == "auto":
+        docker_command = ["docker", "run","--rm", "--volume", 
+                          f"{HOST_UPLOAD_DIR}:/app/files", 
+                          current_app.config.get('DOC2MD_IMAGE'), 
+                          "--autobib", autobib_filename, 
+                          doc_file_name]
 
     result = subprocess.run(docker_command)
     
@@ -49,7 +69,17 @@ def create_files_doc2md(dir_path: str, doc_file_name: str, zotero_used: bool) ->
         print("Error in running container")
         return False
 
-def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex_file_name: Optional[str] = None, filename: str = "default", output_formats: List[Optional[str]] = []) -> bool:
+def create_files_dw(dir_path: str, 
+                    md_file_name: str, 
+                    yml_file_name: str, 
+                    bibtex_file_name: Optional[str] = None, 
+                    filename: str = "default", 
+                    output_formats: List[Optional[str]] = [],
+                    layout_version: str = "twocolumn",
+                    widow_treatment: bool = False,
+                    compound_filter: bool = False,
+                    manual_parentheses: bool = False
+                    ) -> bool:
     '''Function to call Docker container to create output files from uploaded files.
 
         Parameters
@@ -72,6 +102,22 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
             output_formats: List[Optional[str]]
                 The output formats to be created (default: ["pdf", "html",
                 "jats", "tex", "proof"]).
+
+            layout_version: str
+                Which layout version is in use. Options are 'classic' and 
+                'twowolumn'.
+            
+            widow_treament: bool
+                Whether to enable automatic treament of widows in PDF output.
+
+            compound_filter: bool
+                Whether to apply a filter that makes compound words breakable
+                in PDF output.
+
+            manual_parentheses: bool
+                Whether the citations where automatically encoded in the 
+                DOC2MD step.
+                
         Returns
         -------
             bool: True if the file has successfully been created, else False.
@@ -88,11 +134,23 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
                       f"{HOST_UPLOAD_DIR}:/app/article",
                       current_app.config.get('TYPESETTING_IMAGE'),
                       "--metadata_file", yml_file_name, "--markdown_file",
-                      md_file_name, "--filename", filename, "--filter", "ack-filter.lua", "pandoc-figref.lua"]
+                      md_file_name, "--filename", filename, 
+                      "--layout", layout_version,
+                      "--filter", "ack-filter.lua", "pandoc-figref.lua"]
 
     # Add bibtex file if it exists
     if bibtex_file_name != None:
         docker_command.extend(["--bibtex_file", bibtex_file_name])
+
+    # Check if filters need to be added
+    if widow_treatment:
+        docker_command.extend(["--widows"])
+
+    if compound_filter:
+        docker_command.extend(["--compounds"])
+
+    if manual_parentheses:
+        docker_command.extend(["--parentheses"])        
 
     # Select output files
     if output_formats == []:
@@ -115,10 +173,17 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, bibtex
         print("Error in running container")
         return False
 
-def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number:
-                          Optional[str],
-                          orcids: Optional[str], year: Optional[str], doi:
-                          Optional[str], special_issue: Optional[str]) -> bool:
+def create_files_xml2yaml(dir_path: str, 
+                          xml_file_name: str, 
+                          volume_number: Optional[str],
+                          orcids: Optional[str], 
+                          year: Optional[str], 
+                          doi: Optional[str], 
+                          issue_info: Optional[str],
+                          special_issue_editors: Optional[str],
+                          special_issue_book_authors: Optional[str],
+                          special_issue_title: Optional[str]
+                          ) -> bool:
     '''Function to call Docker container to create metadata.yaml file from uploaded OJS-XML.
 
         Parameters
@@ -144,7 +209,10 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number:
 
     # Docker command for XML2YAML-OS
     # See https://github.com/phimisci/xml2yaml-os
-    docker_command = ["docker", "run","--rm", "--volume", f"{ABS_FILE_PATH}:/app/xml_input/{xml_file_name}" ,"--volume", f"{HOST_UPLOAD_DIR}:/app/yaml_output", current_app.config.get('XML2YAML_IMAGE'), xml_file_name]
+    docker_command = ["docker", "run","--rm", "--volume", 
+                      f"{ABS_FILE_PATH}:/app/xml_input/{xml_file_name}" ,
+                      "--volume", f"{HOST_UPLOAD_DIR}:/app/yaml_output", 
+                      current_app.config.get('XML2YAML_IMAGE'), xml_file_name]
 
     ## Adding additional optional arguments
     ## These arguments are depend on the configuration of XML2YAML-OS
@@ -161,8 +229,17 @@ def create_files_xml2yaml(dir_path: str, xml_file_name: str, volume_number:
     if doi != None:
         docker_command.extend(["--doi", f'{doi}'])
     ### SPECIAL ISSUE
-    if special_issue != None:
-        docker_command.extend(["--specialissue", special_issue])
+    if issue_info != "standalone":
+        docker_command.extend(["--issue_type", issue_info])
+
+    if special_issue_editors != None:
+        docker_command.extend(["--issue_editors", special_issue_editors])
+
+    if special_issue_book_authors != None:
+        docker_command.extend(["--issue_book_authors", special_issue_book_authors])
+
+    if special_issue_title != None:
+        docker_command.extend(["--special_issue", special_issue_title])
 
     # running docker container
     result = subprocess.run(docker_command)

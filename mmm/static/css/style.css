@@ -44,6 +44,26 @@ a.active-phimisci {
     color: var(--mmm-secondary-color)!important;
 }
 
+details {
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 0.5rem 0.5rem 0;
+}
+
+summary {
+  margin: -0.5rem -0.5rem 0;
+  padding: 0.5rem;
+}
+
+details[open] {
+  padding: 0.5rem;
+}
+
+details[open] summary {
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+
 /* Navbar */
 
 .centered-container-phimisci {
