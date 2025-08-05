@@ -510,6 +510,12 @@ def mmm_selection(project_id):
         # Check if Zotero was used
         zotero_used = form.zotero_used.data
         bibliography_management = form.bibliography_choices.data
+        # Check if filter were selected
+        layout_version = form.layout_version.data
+        widow_treatment = form.widow_treatment.data
+        compound_filter = form.compound_filter.data
+        manual_parentheses = form.manual_parentheses.data
+
         # Create files
         project = Project.query.get(project_id)
         dir_path = os.path.join(project.path, project.project_name)
@@ -531,12 +537,16 @@ def mmm_selection(project_id):
             res_str = create_files(
                 dir_path, selected_files, selected_mmm, project_id, 
                 xml2yaml_data, bibliography_management, custom_file_name, 
-                output_formats=output_formats
+                output_formats=output_formats, layout_version=layout_version,
+                widow_treatment=widow_treatment, compound_filter=compound_filter,
+                manual_parentheses=manual_parentheses
                 )
         else:
             res_str = create_files(
                 dir_path, selected_files, selected_mmm, project_id, 
-                xml2yaml_data, bibliography_management, custom_file_name
+                xml2yaml_data, bibliography_management, custom_file_name, 
+                layout_version=layout_version, widow_treatment=widow_treatment, 
+                compound_filter=compound_filter, manual_parentheses=manual_parentheses
                 )
         # Create flash message depending on result
         if res_str == "true":

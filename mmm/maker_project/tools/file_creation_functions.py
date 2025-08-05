@@ -69,10 +69,17 @@ def create_files_doc2md(dir_path: str, doc_file_name: str,
         print("Error in running container")
         return False
 
-def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str, 
+def create_files_dw(dir_path: str, 
+                    md_file_name: str, 
+                    yml_file_name: str, 
                     bibtex_file_name: Optional[str] = None, 
                     filename: str = "default", 
-                    output_formats: List[Optional[str]] = []) -> bool:
+                    output_formats: List[Optional[str]] = [],
+                    layout_version: str = "twocolumn",
+                    widow_treatment: bool = False,
+                    compound_filter: bool = False,
+                    manual_parentheses: bool = False
+                    ) -> bool:
     '''Function to call Docker container to create output files from uploaded files.
 
         Parameters
@@ -95,6 +102,22 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str,
             output_formats: List[Optional[str]]
                 The output formats to be created (default: ["pdf", "html",
                 "jats", "tex", "proof"]).
+
+            layout_version: str
+                Which layout version is in use. Options are 'classic' and 
+                'twowolumn'.
+            
+            widow_treament: bool
+                Whether to enable automatic treament of widows in PDF output.
+
+            compound_filter: bool
+                Whether to apply a filter that makes compound words breakable
+                in PDF output.
+
+            manual_parentheses: bool
+                Whether the citations where automatically encoded in the 
+                DOC2MD step.
+                
         Returns
         -------
             bool: True if the file has successfully been created, else False.
@@ -111,11 +134,23 @@ def create_files_dw(dir_path: str, md_file_name: str, yml_file_name: str,
                       f"{HOST_UPLOAD_DIR}:/app/article",
                       current_app.config.get('TYPESETTING_IMAGE'),
                       "--metadata_file", yml_file_name, "--markdown_file",
-                      md_file_name, "--filename", filename, "--filter", "ack-filter.lua", "pandoc-figref.lua"]
+                      md_file_name, "--filename", filename, 
+                      "--layout", layout_version,
+                      "--filter", "ack-filter.lua", "pandoc-figref.lua"]
 
     # Add bibtex file if it exists
     if bibtex_file_name != None:
         docker_command.extend(["--bibtex_file", bibtex_file_name])
+
+    # Check if filters need to be added
+    if widow_treatment:
+        docker_command.extend(["--widows"])
+
+    if compound_filter:
+        docker_command.extend(["--compounds"])
+
+    if manual_parentheses:
+        docker_command.extend(["--parentheses"])        
 
     # Select output files
     if output_formats == []:

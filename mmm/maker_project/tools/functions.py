@@ -33,9 +33,19 @@ def allowed_file(filename: str) -> bool:
     '''
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def create_files(dir_path: str, selected_files: List[str], mmm_choice: str, 
-                 project_id: int, xml2yaml_data: dict, bibliography_management: str, 
-                 file_name: str, output_formats: List[Optional[str]] = []) -> str:
+def create_files(dir_path: str, 
+                 selected_files: List[str], 
+                 mmm_choice: str, 
+                 project_id: int, 
+                 xml2yaml_data: dict, 
+                 bibliography_management: str, 
+                 file_name: str, 
+                 output_formats: List[Optional[str]] = [],
+                 layout_version: str = "twocolumn",
+                 widow_treatment: bool = False,
+                 compound_filter: bool = False,
+                 manual_parentheses: bool = False
+                 ) -> str:
     '''Function to create files based on MMM-Project selections.
 
         Arguments
@@ -60,6 +70,22 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str,
 
         file_name : Optional[str]
             Name of the file(s) to be created (for DW/Maker step).
+
+        layout_version: str
+            Which layout version is in use. Options are 'classic' and 
+            'twowolumn' (for DW/Maker step).
+        
+        widow_treament: bool
+            Whether to enable automatic treament of widows in PDF output
+            (for DW/Maker step).
+
+        compound_filter: bool
+            Whether to apply a filter that makes compound words breakable
+            in PDF output (for DW/Maker step).
+
+        manual_parentheses: bool
+            Whether the citations where automatically encoded in the 
+            DOC2MD step (for DW/Maker step).
         
         Returns
         -------
@@ -175,7 +201,25 @@ def create_files(dir_path: str, selected_files: List[str], mmm_choice: str,
         if file_name == "":
             file_name = os.path.splitext(md_file)[0]
         # Proceed with creating files
-        res = create_files_dw(dir_path, md_file, yaml_file, bibtex_file_name=bib_file, filename=file_name, output_formats=output_formats) if bib_file != None else create_files_dw(dir_path, md_file, yaml_file, filename=file_name, output_formats=output_formats)
+        if bib_file != None:
+            res = create_files_dw(dir_path, md_file, yaml_file, 
+                    bibtex_file_name=bib_file, 
+                    filename=file_name, 
+                    output_formats=output_formats,
+                    layout_version=layout_version,
+                    widow_treatment=widow_treatment,
+                    compound_filter=compound_filter,
+                    manual_parentheses=manual_parentheses
+                    )  
+        else:
+            res = create_files_dw(dir_path, md_file, yaml_file, 
+                    filename=file_name, 
+                    output_formats=output_formats,
+                    layout_version=layout_version,
+                    widow_treatment=widow_treatment,
+                    compound_filter=compound_filter,
+                    manual_parentheses=manual_parentheses
+                    )
         # Rename files back to original names if necessary
         if res:
             # Get file name from Markdown file if no file name was passed
