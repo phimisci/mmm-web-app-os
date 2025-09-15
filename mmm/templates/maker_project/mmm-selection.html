@@ -35,6 +35,18 @@
         {% endfor %}
     </div>
 
+    <!-- Hidden forms for TEX2PDF step -->
+    <div id="hiddenTEXPDFField" style="display: None;">
+        <div class="my-sm-3">
+            {{ form.layout_version.label(class_='form-label') }}
+            {{ form.layout_version(class_='form-control') }}
+            <div id="layoutTEXPDFHelp" class="form-text">
+                Should match the layout version that the TeX file was converted
+                to in the production files maker step.
+            </div>
+        </div>
+    </div>
+
     <!-- Hidden forms for MAKER step -->
     <div id="hiddenMakerField" style="display: None;">
         <div class="my-sm-3">
@@ -215,6 +227,21 @@
             });
         });
     });     
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var radios = document.querySelectorAll('input[name="mmm_choices"]');
+        var hiddenDiv = document.getElementById('hiddenTEXPDFField');
+
+        radios.forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                if (radio.checked && radio.value === 'tex2pdf') {
+                    hiddenDiv.style.display = 'block';
+                } else {
+                    hiddenDiv.style.display = 'none';
+                }
+            });
+        });
+    });
 
     document.addEventListener('DOMContentLoaded', function () {
         var radios = document.querySelectorAll('input[name="mmm_choices"]');
