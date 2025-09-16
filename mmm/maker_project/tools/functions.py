@@ -259,7 +259,11 @@ def create_files(dir_path: str,
             for img_filename in image_filename_list:
                 shutil.copy(f"{dir_path}/{img_filename}", f"{dir_path}/article/{img_filename}")
             # Create files
-            res = create_files_tex2pdf(dir_path, tex_file_name)
+            res = create_files_tex2pdf(
+                dir_path, 
+                tex_file_name, 
+                layout_version=layout_version
+            )
             # Delete article/ folder
             # This causes problems when running MAKER step, since it expects only files in dir_path
             shutil.rmtree(f"{dir_path}/article")
