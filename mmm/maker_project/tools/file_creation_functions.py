@@ -254,7 +254,9 @@ def create_files_xml2yaml(dir_path: str,
         print("Error in running container")
         return False
     
-def create_files_tex2pdf(dir_path: str, tex_file_name: str) -> bool:
+def create_files_tex2pdf(dir_path: str, 
+                         tex_file_name: str,
+                         layout_version: str = "twocolumn") -> bool:
     '''Function to call Docker container to create PDF file from uploaded TeX file.
 
         Parameters
@@ -264,6 +266,10 @@ def create_files_tex2pdf(dir_path: str, tex_file_name: str) -> bool:
                 
             tex_file_name: str
                 The name of the TeX file (needs to be in dir_path).
+
+            layout_version: str
+                Which layout version is in use. Options are 'classic' and 
+                'twowolumn'.                
         
         Returns
         -------
@@ -277,7 +283,12 @@ def create_files_tex2pdf(dir_path: str, tex_file_name: str) -> bool:
     HOST_UPLOAD_DIR = os.path.join(current_app.config.get('UPLOAD_PATH'), dir_path)
 
     # Create docker command
-    docker_command = ["docker", "run","--rm", "-v", f"{HOST_UPLOAD_DIR}:/app/output", "-v", f"{HOST_UPLOAD_DIR}/{tex_file_name}:/app/{tex_file_name}", "-v", f"{HOST_UPLOAD_DIR}/article:/app/article" , current_app.config.get('TEX2PDF_IMAGE'), tex_file_name]
+    docker_command = ["docker", "run","--rm", "-v", f"{HOST_UPLOAD_DIR}:/app/output", 
+                      "-v", f"{HOST_UPLOAD_DIR}/{tex_file_name}:/app/{tex_file_name}", 
+                      "-v", f"{HOST_UPLOAD_DIR}/article:/app/article" , 
+                      current_app.config.get('TEX2PDF_IMAGE'), 
+                      "--layout", layout_version,
+                      tex_file_name]
     
     result = subprocess.run(docker_command)
     
