@@ -241,13 +241,16 @@ def create_files(dir_path: str,
         else:
             return "Error creating files using Maker."
     elif mmm_choice == "tex2pdf":
-                # Check which files (TeX + images) have been passed
+        # Check which files (TeX, images (png, jpg, pdf), and bib) have been 
+        # passed
         tex_file_name = ""
         image_filename_list = []
         for filename in selected_files:
             if filename.split(".")[-1].lower() in ["tex"]:
                 tex_file_name = filename
-            elif filename.split(".")[-1].lower() in ["png", "jpg", "jpeg"]:
+            elif filename.split(".")[-1].lower() in [
+                "png", "jpg", "jpeg", "pdf", "bib"
+                ]:
                 image_filename_list.append(filename)
         # Check if file is tex
         if tex_file_name == "":
